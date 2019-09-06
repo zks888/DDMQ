@@ -12,8 +12,10 @@ class TestCarrera extends CI_Controller {
             'a' => 'Hello',
             'b' => 'World',
         ]);
-        $ret = $this->carrera->send('tp1', $data, Carrera::PARTITION_RAND, 0);
-        var_dump($ret);
+        for ($i=0;$i<100;$i++) {
+            $ret = $this->carrera->send('tp1', $data, Carrera::PARTITION_RAND, 0);
+            var_dump($ret);
+        }
     }
 
 }

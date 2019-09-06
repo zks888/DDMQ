@@ -13,7 +13,7 @@ else
     echo -n "===== maven build successfully! ====="
 fi
 
-OUTPUT_PATH=${CURDIR}/output/
+OUTPUT_PATH=${CURDIR}/broker/
 mkdir -p ${OUTPUT_PATH}
 cp -r distribution/target/apache-rocketmq/* ${OUTPUT_PATH}
 cp ${CURDIR}/control.sh ${OUTPUT_PATH}/control.sh

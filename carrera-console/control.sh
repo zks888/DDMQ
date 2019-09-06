@@ -1,7 +1,7 @@
 #!/bin/bash
 
-WEBAPPS="/home/xiaoju/tomcat/webapps"
-TOMCATBIN="/home/xiaoju/tomcat/bin"
+WEBAPPS="/usr/local/var/tomcat/webapps"
+TOMCATBIN="/usr/local/opt/tomcat/bin"
 
 function start() {
 	OLD_PID="`pgrep -f org.apache.catalina.startup.Bootstrap`"

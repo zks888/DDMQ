@@ -11,7 +11,6 @@ use Thrift\Protocol\TCompactProtocol;
 use Thrift\Transport\TFramedTransport;
 use Thrift\Transport\TSocket;
 
-
 class Carrera {
     // request log
     const REQ_LOG = 'mq.log';

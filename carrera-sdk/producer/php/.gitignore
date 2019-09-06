@@ -1,0 +1,6 @@
+*.iml
+**/logs
+vendor
+framework
+*.idea
+*.DS_Store

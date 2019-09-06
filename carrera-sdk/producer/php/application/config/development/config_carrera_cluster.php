@@ -10,5 +10,5 @@ $config['carrera'] = array(
     // time out for each send from client to proxy
     'CARRERA_CLIENT_TIMEOUT' => 100,
     // log path
-    'CARRERA_CLIENT_LOGPATH' => '/home/xiaoju/webroot/log/mq/',
+    'CARRERA_CLIENT_LOGPATH' => '/usr/local/var/log/rocketmq/',
 );

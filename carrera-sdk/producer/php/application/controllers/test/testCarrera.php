@@ -8,7 +8,11 @@ class TestCarrera extends CI_Controller {
 
     public function produce() {
         $this->load->library('carrera/Carrera');
-        $ret = $this->carrera->send('Test', 'Hello World', Carrera::PARTITION_RAND, 0);
+        $data = json_encode([
+            'a' => 'Hello',
+            'b' => 'World',
+        ]);
+        $ret = $this->carrera->send('tp1', $data, Carrera::PARTITION_RAND, 0);
         var_dump($ret);
     }
 

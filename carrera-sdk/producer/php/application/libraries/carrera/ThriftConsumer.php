@@ -78,7 +78,7 @@ class ThriftConsumer
         $this->log_path = $aConfig['CARRERA_CLIENT_LOGPATH'];
     }
 
-    public function pull($sGroupId, $sTopic, $iMaxBatchSize, $iMaxLingerTime, $oResult = null)
+    public function pull($sGroupId, $sTopic, $iMaxBatchSize = null, $iMaxLingerTime = null, $oResult = null)
     {
         $dropInfo = array(
             'opera_stat_key' => 'carrera_drop',
@@ -112,10 +112,8 @@ class ThriftConsumer
 
         $startTime = microtime(true);
         try {
-            $result = $this->pullWithThrift($request);
-
-            $ret = $result['ret'];
-            switch ($ret->code) {
+            $ret = $this->pullWithThrift($request);
+            switch ($ret['code']) {
                 case self::OK:
                     $status = 'success';
                     break;
@@ -134,27 +132,25 @@ class ThriftConsumer
             $status = 'failure';
         }
         $used = (microtime(true) - $startTime) * 1000;
-        $addr = $result['ip'];
+        $addr = $ret['ip'];
 
         $logInfo = array(
             'opera_stat_key' => 'carrera_trace',
             'result' => $status,
-            'errno' => $ret->code,
-            'errmsg' => $ret->msg,
+            'errno' => $ret['code'],
+            'errmsg' => $ret['msg'],
             'ip' => $addr,
-            'topic' => $msgObj->topic,
-            'key' => $ret->key,
-            'partition' => $msgObj->partitionId,
-            'hashID' => $msgObj->hashId,
-            'len' => strlen($msgObj->value),
+            'groupId' => $sGroupId,
+            'topic' => $sTopic,
+            'maxBatchSize' => $iMaxBatchSize,
+            'maxLingerTime' => $iMaxLingerTime,
             'used' => $used,
             'version' => self::PHP_SDK_VERSION
         );
 
-        if ($ret->code > self::CACHE_OK) {
-            $dropInfo['errno'] = $ret->code;
-            $dropInfo['errmsg'] = $ret->msg;
-            $dropInfo['key'] = $ret->key;
+        if ($ret['code'] > self::CACHE_OK) {
+            $dropInfo['errno'] = $ret['code'];
+            $dropInfo['errmsg'] = $ret['msg'];
             $this->writeLog($this->log_path . self::DROP_LOG, $dropInfo);
         }
         $this->writeLog($this->log_path . self::REQ_LOG, $logInfo);
@@ -193,6 +189,8 @@ class ThriftConsumer
                 $transport->close();
                 $result = array(
                     'ret' => $ret,
+                    'code' => self::OK,
+                    'msg' => 'success',
                     'ip' => $proxyAddr
                 );
                 if ($ret->code <= self::CACHE_OK) {
@@ -201,10 +199,8 @@ class ThriftConsumer
             } catch (\Exception $e) {
                 $transport->close();
                 $result = array(
-                    'ret' => array(
-                        'code' => self::CLIENT_EXCEPTION,
-                        'msg' => $e->getMessage()
-                    ),
+                    'code' => self::CLIENT_EXCEPTION,
+                    'msg' => $e->getMessage(),
                     'ip' => $proxyAddr
                 );
             }

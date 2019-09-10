@@ -189,6 +189,9 @@ class ConsumerServiceClient implements \didi\carrera\consumer\proxy\ConsumerServ
         if ($result->success !== null) {
             return $result->success;
         }
+        if ($result->error !== null) {
+            throw $result->error;
+        }
         throw new \Exception("$cmd failed: unknown result");
     }
 }

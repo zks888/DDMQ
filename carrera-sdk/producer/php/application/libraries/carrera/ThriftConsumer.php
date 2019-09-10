@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/thriftconf.php';
 
-use didi\carrera\consumer\proxy\Result;
-use didi\carrera\consumer\proxy\Message;
+use didi\carrera\consumer\proxy\PullRequest;
+use didi\carrera\consumer\proxy\ConsumeResult;
 use didi\carrera\consumer\proxy\ConsumerServiceClient;
 
 use Thrift\Protocol\TCompactProtocol;
@@ -15,10 +15,10 @@ class ThriftConsumer
     const REQ_LOG = 'mq.log';
     // 异常log
     const DROP_LOG = 'drop.log';
-    // 依赖hash分区
-    const PARTITION_HASH = -1;
-    // 随机分区
-    const PARTITION_RAND = -2;
+    // 一次取几条数据
+    const MAX_BATCH_SIZE = 1;
+    //
+    const MAX_LINGER_TIME = 60;
     // 日志格式2016-10-31 12:02:01 || {msg}
     const LOG_FORMAT = "%s || %s";
     /*  ...  */
@@ -78,39 +78,41 @@ class ThriftConsumer
         $this->log_path = $aConfig['CARRERA_CLIENT_LOGPATH'];
     }
 
-    public function pull($sTopic, $iPartition, $iHashId, $sTags = null)
+    public function pull($sGroupId, $sTopic, $iMaxBatchSize, $iMaxLingerTime, $oResult = null)
     {
         $dropInfo = array(
             'opera_stat_key' => 'carrera_drop',
+            'groupId' => $sGroupId,
             'topic' => $sTopic,
-            'partition' => $iPartition,
-            'hashID' => $iHashId,
-            'tags' => $sTags,
+            'maxBatchSize' => $iMaxBatchSize,
+            'maxLingerTime' => $iMaxLingerTime,
+            'result' => $oResult,
             'version' => self::PHP_SDK_VERSION
         );
 
-        if (!isset($sTopic)) {
-            return new Result(array(
+        if (!isset($sGroupId) || !isset($sTopic)) {
+            return array(
                 'code' => self::MISSING_PARAMETERS,
                 'msg' => 'missing parameters'
-            ));
+            );
         }
-        if (!isset($iPartition) || !isset($iHashId)) {
-            $iPartition = self::PARTITION_RAND;
-            $iHashId = 0;
+        if (!isset($iMaxBatchSize) || !isset($iMaxLingerTime)) {
+            $iMaxBatchSize = self::MAX_BATCH_SIZE;
+            $iMaxLingerTime = self::MAX_LINGER_TIME;
         }
 
-        $msgObj = new Message(array(
+        $request = new PullRequest(array(
+            'groupId' => $sGroupId,
             'topic' => $sTopic,
-            'partitionId' => $iPartition,
-            'hashId' => $iHashId,
-            'tags' => $sTags,
+            'maxBatchSize' => $iMaxBatchSize,
+            'maxLingerTime' => $iMaxLingerTime,
+            'result' => $oResult,
             'version' => self::PHP_SDK_VERSION
         ));
 
         $startTime = microtime(true);
         try {
-            $result = $this->pullWithThrift($msgObj);
+            $result = $this->pullWithThrift($request);
 
             $ret = $result['ret'];
             switch ($ret->code) {
@@ -125,10 +127,10 @@ class ThriftConsumer
                     break;
             }
         } catch (\Exception $e) {
-            $ret = new Result(array(
+            $ret = array(
                 'code' => self::CLIENT_EXCEPTION,
                 'msg' => $e->getMessage(),
-            ));
+            );
             $status = 'failure';
         }
         $used = (microtime(true) - $startTime) * 1000;
@@ -160,7 +162,7 @@ class ThriftConsumer
         return $ret;
     }
 
-    private function pullWithThrift($msg)
+    private function pullWithThrift($request)
     {
         $proxyAddr = null;
         $tmpProxyList = $this->proxyList;
@@ -187,7 +189,7 @@ class ThriftConsumer
                 $protocol = new TCompactProtocol($transport);
                 $client = new ConsumerServiceClient($protocol);
 
-                $ret = $client->sendSync($msg, $this->proxyTimeout);
+                $ret = $client->pull($request);
                 $transport->close();
                 $result = array(
                     'ret' => $ret,
@@ -199,10 +201,10 @@ class ThriftConsumer
             } catch (\Exception $e) {
                 $transport->close();
                 $result = array(
-                    'ret' => new Result(array(
+                    'ret' => array(
                         'code' => self::CLIENT_EXCEPTION,
                         'msg' => $e->getMessage()
-                    )),
+                    ),
                     'ip' => $proxyAddr
                 );
             }

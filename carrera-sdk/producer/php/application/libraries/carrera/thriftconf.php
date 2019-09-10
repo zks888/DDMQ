@@ -24,4 +24,7 @@ require_once $GLOBALS['THRIFT_ROOT'].'/Exception/TProtocolException.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Exception/TApplicationException.php';
 
 require_once __DIR__ . '/Thrift/ProducerService.php';
-require_once __DIR__ . '/Thrift/Types.php';
+require_once __DIR__ . '/Thrift/ProducerTypes.php';
+
+//require_once __DIR__ . '/Thrift/ConsumerService.php';
+//require_once __DIR__ . '/Thrift/ConsumerTypes.php';

@@ -1,12 +1,12 @@
 <?php
 
-class TestCarrera extends CI_Controller {
+class Producer extends CI_Controller {
 
     public function index() {
-        echo "Hello Carrera\n";
+        echo "Hello Carrera Producer\n";
     }
 
-    public function produce() {
+    public function test() {
         $this->load->library('carrera/Carrera');
         $data = json_encode([
             'a' => 'Hello',
@@ -17,5 +17,4 @@ class TestCarrera extends CI_Controller {
             var_dump($ret);
         }
     }
-
 }

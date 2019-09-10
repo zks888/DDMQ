@@ -1,5 +1,5 @@
 <?php
-$_SERVER['argv'] = array(__DIR__."/index.php", "test", "testCarrera", "produce");
+$_SERVER['argv'] = array(__DIR__."/index.php", "test", "producer", "test");
 
 $argv = array_slice($_SERVER['argv'], 1);
 $_SERVER['argc'] = count($_SERVER['argv']);

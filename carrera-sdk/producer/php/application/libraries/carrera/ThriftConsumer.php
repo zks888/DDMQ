@@ -1,15 +1,16 @@
 <?php
 require_once __DIR__ . '/thriftconf.php';
 
-use didi\carrera\producer\proxy\Result;
-use didi\carrera\producer\proxy\Message;
-use didi\carrera\producer\proxy\ProducerServiceClient;
+use didi\carrera\consumer\proxy\Result;
+use didi\carrera\consumer\proxy\Message;
+use didi\carrera\consumer\proxy\ConsumerServiceClient;
 
 use Thrift\Protocol\TCompactProtocol;
 use Thrift\Transport\TFramedTransport;
 use Thrift\Transport\TSocket;
 
-class Carrera {
+class ThriftConsumer
+{
     // request log
     const REQ_LOG = 'mq.log';
     // 异常log
@@ -28,7 +29,7 @@ class Carrera {
     const DOWNGRADE = 100;
     const CLIENT_EXCEPTION = 101;
     const MISSING_PARAMETERS = 102;
-    
+
     const PHP_SDK_VERSION = "carrera_php_1.0";
 
     /**
@@ -65,7 +66,8 @@ class Carrera {
 
     private $log_path;
 
-    public function __construct() {
+    public function __construct()
+    {
         $ci = get_instance();
         $ci->load->config('config_carrera_cluster', true);
         $aConfig = $ci->config->item('carrera', 'config_carrera_cluster');
@@ -76,19 +78,18 @@ class Carrera {
         $this->log_path = $aConfig['CARRERA_CLIENT_LOGPATH'];
     }
 
-    public function send($sTopic, $sBody, $iPartition, $iHashId, $sTags = null)
+    public function pull($sTopic, $iPartition, $iHashId, $sTags = null)
     {
         $dropInfo = array(
             'opera_stat_key' => 'carrera_drop',
             'topic' => $sTopic,
             'partition' => $iPartition,
             'hashID' => $iHashId,
-            'body'  => $sBody,
             'tags' => $sTags,
-            'version' => Carrera::PHP_SDK_VERSION
+            'version' => self::PHP_SDK_VERSION
         );
 
-        if (!isset($sTopic) || !isset($sBody)) {
+        if (!isset($sTopic)) {
             return new Result(array(
                 'code' => self::MISSING_PARAMETERS,
                 'msg' => 'missing parameters'
@@ -99,26 +100,20 @@ class Carrera {
             $iHashId = 0;
         }
 
-        $sKey = md5($sBody . microtime(true));
-
         $msgObj = new Message(array(
             'topic' => $sTopic,
             'partitionId' => $iPartition,
             'hashId' => $iHashId,
-            'value' => $sBody,
-            'key' => $sKey,
             'tags' => $sTags,
-            'version' => Carrera::PHP_SDK_VERSION
+            'version' => self::PHP_SDK_VERSION
         ));
 
         $startTime = microtime(true);
         try {
-
-            $result = $this->sendWithThrift($msgObj);
+            $result = $this->pullWithThrift($msgObj);
 
             $ret = $result['ret'];
-            $ret->key = $msgObj->key;
-            switch($ret->code) {
+            switch ($ret->code) {
                 case self::OK:
                     $status = 'success';
                     break;
@@ -133,11 +128,10 @@ class Carrera {
             $ret = new Result(array(
                 'code' => self::CLIENT_EXCEPTION,
                 'msg' => $e->getMessage(),
-                'key' => $msgObj->key
             ));
             $status = 'failure';
         }
-        $used = (microtime(true) - $startTime)*1000;
+        $used = (microtime(true) - $startTime) * 1000;
         $addr = $result['ip'];
 
         $logInfo = array(
@@ -152,7 +146,7 @@ class Carrera {
             'hashID' => $msgObj->hashId,
             'len' => strlen($msgObj->value),
             'used' => $used,
-            'version' => Carrera::PHP_SDK_VERSION
+            'version' => self::PHP_SDK_VERSION
         );
 
         if ($ret->code > self::CACHE_OK) {
@@ -166,8 +160,8 @@ class Carrera {
         return $ret;
     }
 
-    private function sendWithThrift($msg) {
-
+    private function pullWithThrift($msg)
+    {
         $proxyAddr = null;
         $tmpProxyList = $this->proxyList;
         $retryCount = 0;
@@ -191,7 +185,7 @@ class Carrera {
                 $transport = new TFramedTransport($socket);
                 $transport->open();
                 $protocol = new TCompactProtocol($transport);
-                $client = new ProducerServiceClient($protocol);
+                $client = new ConsumerServiceClient($protocol);
 
                 $ret = $client->sendSync($msg, $this->proxyTimeout);
                 $transport->close();
@@ -212,7 +206,7 @@ class Carrera {
                     'ip' => $proxyAddr
                 );
             }
-        }while($retryCount ++ < $this->clientRetry);
+        } while ($retryCount++ < $this->clientRetry);
 
         return $result;
     }
@@ -225,7 +219,8 @@ class Carrera {
      *
      * @return void
      */
-    private function writeLog($sPath, $mLog) {
+    private function writeLog($sPath, $mLog)
+    {
         if (file_exists(dirname($sPath))) {
             if (is_array($mLog)) {
                 $sMsg = json_encode($mLog);

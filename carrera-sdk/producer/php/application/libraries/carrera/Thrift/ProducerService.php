@@ -77,41 +77,13 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
         $args = new \didi\carrera\producer\proxy\ProducerService_sendSync_args();
         $args->message = $message;
         $args->timeout = $timeout;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendSync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendSync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
+        $this->send_base('sendSync', $args);
     }
 
     public function recv_sendSync()
     {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\producer\proxy\ProducerService_sendSync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\producer\proxy\ProducerService_sendSync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendSync failed: unknown result");
+        $result = new \didi\carrera\producer\proxy\ProducerService_sendSync_result();
+        return $this->receive_base($result, 'sendSync');
     }
 
     public function sendBatchSync(array $messages)
@@ -124,41 +96,13 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
     {
         $args = new \didi\carrera\producer\proxy\ProducerService_sendBatchSync_args();
         $args->messages = $messages;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendBatchSync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendBatchSync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
+        $this->send_base('sendBatchSync', $args);
     }
 
     public function recv_sendBatchSync()
     {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\producer\proxy\ProducerService_sendBatchSync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\producer\proxy\ProducerService_sendBatchSync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendBatchSync failed: unknown result");
+        $result = new \didi\carrera\producer\proxy\ProducerService_sendBatchSync_result();
+        return $this->receive_base($result, 'sendBatchSync');
     }
 
     public function sendAsync(\didi\carrera\producer\proxy\Message $message)
@@ -171,41 +115,13 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
     {
         $args = new \didi\carrera\producer\proxy\ProducerService_sendAsync_args();
         $args->message = $message;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendAsync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendAsync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
+        $this->send_base('sendAsync', $args);
     }
 
     public function recv_sendAsync()
     {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\producer\proxy\ProducerService_sendAsync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\producer\proxy\ProducerService_sendAsync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendAsync failed: unknown result");
+        $result = new \didi\carrera\producer\proxy\ProducerService_sendAsync_result();
+        return $this->receive_base($result, 'sendAsync');
     }
 
     public function sendNotifySync(\didi\carrera\producer\proxy\Notify $notify, $timeout)
@@ -219,41 +135,13 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
         $args = new \didi\carrera\producer\proxy\ProducerService_sendNotifySync_args();
         $args->notify = $notify;
         $args->timeout = $timeout;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendNotifySync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendNotifySync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
+        $this->send_base('sendNotifySync', $args);
     }
 
     public function recv_sendNotifySync()
     {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\producer\proxy\ProducerService_sendNotifySync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\producer\proxy\ProducerService_sendNotifySync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendNotifySync failed: unknown result");
+        $result = new \didi\carrera\producer\proxy\ProducerService_sendNotifySync_result();
+        return $this->receive_base($result, 'sendNotifySync');
     }
 
     public function sendNotifyAsync(\didi\carrera\producer\proxy\Notify $notify)
@@ -266,43 +154,44 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
     {
         $args = new \didi\carrera\producer\proxy\ProducerService_sendNotifyAsync_args();
         $args->notify = $notify;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendNotifyAsync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendNotifyAsync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
+        $this->send_base('sendNotifyAsync', $args);
     }
 
     public function recv_sendNotifyAsync()
     {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\producer\proxy\ProducerService_sendNotifyAsync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
+        $result = new \didi\carrera\producer\proxy\ProducerService_sendNotifyAsync_result();
+        return $this->receive_base($result, 'sendNotifyAsync');
+    }
 
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\producer\proxy\ProducerService_sendNotifyAsync_result();
-            $result->read($this->input_);
+    public function send_base($cmd, $args)
+    {
+        $this->output_->writeMessageBegin($cmd, TMessageType::CALL, $this->seqid_);
+        $args->write($this->output_);
+        $this->output_->writeMessageEnd();
+        $this->output_->getTransport()->flush();
+    }
+
+    public function receive_base($result, $cmd)
+    {
+        $rseqid = 0;
+        $fname = null;
+        $mtype = 0;
+
+        $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+        if ($mtype == TMessageType::EXCEPTION) {
+            $x = new TApplicationException();
+            $x->read($this->input_);
             $this->input_->readMessageEnd();
+            throw $x;
         }
+        $result->read($this->input_);
+        $this->input_->readMessageEnd();
+
         if ($result->success !== null) {
             return $result->success;
         }
-        throw new \Exception("sendNotifyAsync failed: unknown result");
+        throw new \Exception("$cmd failed: unknown result");
     }
-
 }
 
 // HELPER FUNCTIONS AND STRUCTURES
@@ -1191,7 +1080,4 @@ class ProducerService_sendNotifyAsync_result
         $xfer += $output->writeStructEnd();
         return $xfer;
     }
-
 }
-
-

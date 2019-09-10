@@ -21,36 +21,34 @@ use Thrift\Exception\TApplicationException;
 interface ConsumerServiceIf
 {
     /**
-     * @param \didi\carrera\consumer\proxy\Message $message
-     * @param int $timeout
-     * @return \didi\carrera\consumer\proxy\Result
+     * @param \didi\carrera\consumer\proxy\PullRequest $request
+     * @return \didi\carrera\consumer\proxy\PullResponse
      */
-    public function sendSync(\didi\carrera\consumer\proxy\Message $message, $timeout);
+    public function pull(\didi\carrera\consumer\proxy\PullRequest $request);
 
     /**
-     * @param \didi\carrera\consumer\proxy\Message[] $messages
-     * @return \didi\carrera\consumer\proxy\Result
+     * @param \didi\carrera\consumer\proxy\ConsumeResult $result
+     * @return boolean
      */
-    public function sendBatchSync(array $messages);
+    public function submit(\didi\carrera\consumer\proxy\ConsumeResult $result);
 
     /**
-     * @param \didi\carrera\consumer\proxy\Message $message
-     * @return \didi\carrera\consumer\proxy\Result
+     * @param \didi\carrera\consumer\proxy\ConsumeStatsRequest $request
+     * @return \didi\carrera\consumer\proxy\ConsumeStats[]
      */
-    public function sendAsync(\didi\carrera\consumer\proxy\Message $message);
+    public function getConsumeStats(\didi\carrera\consumer\proxy\ConsumeStatsRequest $request);
 
     /**
-     * @param \didi\carrera\consumer\proxy\Notify $notify
-     * @param int $timeout
-     * @return \didi\carrera\consumer\proxy\Result
+     * @param \didi\carrera\consumer\proxy\FetchRequest $request
+     * @return \didi\carrera\consumer\proxy\FetchResponse
      */
-    public function sendNotifySync(\didi\carrera\consumer\proxy\Notify $notify, $timeout);
+    public function fetch(\didi\carrera\consumer\proxy\FetchRequest $request);
 
     /**
-     * @param \didi\carrera\consumer\proxy\Notify $notify
-     * @return \didi\carrera\consumer\proxy\Result
+     * @param \didi\carrera\consumer\proxy\AckResult $result
+     * @return boolean
      */
-    public function sendNotifyAsync(\didi\carrera\consumer\proxy\Notify $notify);
+    public function ack(\didi\carrera\consumer\proxy\AckResult $result);
 }
 
 class ConsumerServiceClient implements \didi\carrera\consumer\proxy\ConsumerServiceIf
@@ -66,248 +64,135 @@ class ConsumerServiceClient implements \didi\carrera\consumer\proxy\ConsumerServ
         $this->output_ = $output ? $output : $input;
     }
 
-    public function sendSync(\didi\carrera\consumer\proxy\Message $message, $timeout)
+    public function pull(\didi\carrera\consumer\proxy\PullRequest $request)
     {
-        $this->send_sendSync($message, $timeout);
-        return $this->recv_sendSync();
+        $this->send_pull($request);
+        return $this->recv_pull();
     }
 
-    public function send_sendSync(\didi\carrera\consumer\proxy\Message $message, $timeout)
+    public function send_pull(\didi\carrera\consumer\proxy\PullRequest $request)
     {
-        $args = new \didi\carrera\consumer\proxy\ProducerService_sendSync_args();
-        $args->message = $message;
-        $args->timeout = $timeout;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendSync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendSync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
+        $args = new \didi\carrera\consumer\proxy\ConsumerService_pull_args();
+        $args->request = $request;
+        $this->send_base("pull", $args);
     }
 
-    public function recv_sendSync()
+    public function recv_pull()
     {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\consumer\proxy\ProducerService_sendSync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
+        $result = new \didi\carrera\consumer\proxy\ConsumerService_pull_result();
+        return $this->receive_base($result, "pull");
+    }
 
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\consumer\proxy\ProducerService_sendSync_result();
-            $result->read($this->input_);
+    public function submit(\didi\carrera\consumer\proxy\ConsumeResult $result)
+    {
+        $this->send_submit($result);
+        return $this->recv_submit();
+    }
+
+    public function send_submit(\didi\carrera\consumer\proxy\ConsumeResult $result)
+    {
+        $args = new \didi\carrera\consumer\proxy\ConsumerService_submit_args();
+        $args->result($result);
+        $this->send_base("submit", $args);
+    }
+
+    public function recv_submit()
+    {
+        $result = new \didi\carrera\consumer\proxy\ConsumerService_submit_result();
+        return $this->receive_base($result, "submit");
+    }
+
+    public function getConsumeStats(\didi\carrera\consumer\proxy\ConsumeStatsRequest $request)
+    {
+        $this->send_getConsumeStats($request);
+        return $this->recv_getConsumeStats();
+    }
+
+    public function send_getConsumeStats(\didi\carrera\consumer\proxy\ConsumeStatsRequest $request)
+    {
+        $args = new \didi\carrera\consumer\proxy\ConsumerService_getConsumeStats_args();
+        $args->request = $request;
+        $this->send_base("getConsumeStats", $args);
+    }
+
+    public function recv_getConsumeStats()
+    {
+        $result = new \didi\carrera\consumer\proxy\ConsumerService_getConsumeStats_result();
+        return $this->receive_base($result, "getConsumeStats");
+    }
+
+    public function fetch(\didi\carrera\consumer\proxy\FetchRequest $request)
+    {
+        $this->send_fetch($request);
+        return $this->recv_fetch();
+    }
+
+    public function send_fetch(\didi\carrera\consumer\proxy\FetchRequest $request)
+    {
+        $args = new \didi\carrera\consumer\proxy\ConsumerService_fetch_args();
+        $args->request = $request;
+        $this->send_base("fetch", $args);
+    }
+
+    public function recv_fetch()
+    {
+        $result = new \didi\carrera\consumer\proxy\ConsumerService_fetch_result();
+        return $this->receive_base($result, "fetch");
+    }
+
+    public function ack(\didi\carrera\consumer\proxy\AckResult $result)
+    {
+        $this->send_ack($result);
+        return $this->recv_ack();
+    }
+
+    public function send_ack(\didi\carrera\consumer\proxy\AckResult $result)
+    {
+        $args = new \didi\carrera\consumer\proxy\ConsumerService_ack_args();
+        $args->result = $result;
+        $this->send_base("ack", $args);
+    }
+
+    public function recv_ack()
+    {
+        $result = new \didi\carrera\consumer\proxy\ConsumerService_ack_result();
+        return $this->receive_base($result, "ack");
+    }
+
+    public function send_base($cmd, $args)
+    {
+        $this->output_->writeMessageBegin($cmd, TMessageType::CALL, $this->seqid_);
+        $args->write($this->output_);
+        $this->output_->writeMessageEnd();
+        $this->output_->getTransport()->flush();
+    }
+
+    public function receive_base($result, $cmd)
+    {
+        $rseqid = 0;
+        $fname = null;
+        $mtype = 0;
+
+        $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+        if ($mtype == TMessageType::EXCEPTION) {
+            $x = new TApplicationException();
+            $x->read($this->input_);
             $this->input_->readMessageEnd();
+            throw $x;
         }
+        $result->read($this->input_);
+        $this->input_->readMessageEnd();
+
         if ($result->success !== null) {
             return $result->success;
         }
-        throw new \Exception("sendSync failed: unknown result");
+        throw new \Exception("$cmd failed: unknown result");
     }
-
-    public function sendBatchSync(array $messages)
-    {
-        $this->send_sendBatchSync($messages);
-        return $this->recv_sendBatchSync();
-    }
-
-    public function send_sendBatchSync(array $messages)
-    {
-        $args = new \didi\carrera\consumer\proxy\ProducerService_sendBatchSync_args();
-        $args->messages = $messages;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendBatchSync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendBatchSync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
-    }
-
-    public function recv_sendBatchSync()
-    {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\consumer\proxy\ProducerService_sendBatchSync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\consumer\proxy\ProducerService_sendBatchSync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendBatchSync failed: unknown result");
-    }
-
-    public function sendAsync(\didi\carrera\consumer\proxy\Message $message)
-    {
-        $this->send_sendAsync($message);
-        return $this->recv_sendAsync();
-    }
-
-    public function send_sendAsync(\didi\carrera\consumer\proxy\Message $message)
-    {
-        $args = new \didi\carrera\consumer\proxy\ProducerService_sendAsync_args();
-        $args->message = $message;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendAsync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendAsync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
-    }
-
-    public function recv_sendAsync()
-    {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\consumer\proxy\ProducerService_sendAsync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\consumer\proxy\ProducerService_sendAsync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendAsync failed: unknown result");
-    }
-
-    public function sendNotifySync(\didi\carrera\consumer\proxy\Notify $notify, $timeout)
-    {
-        $this->send_sendNotifySync($notify, $timeout);
-        return $this->recv_sendNotifySync();
-    }
-
-    public function send_sendNotifySync(\didi\carrera\consumer\proxy\Notify $notify, $timeout)
-    {
-        $args = new \didi\carrera\consumer\proxy\ProducerService_sendNotifySync_args();
-        $args->notify = $notify;
-        $args->timeout = $timeout;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendNotifySync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendNotifySync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
-    }
-
-    public function recv_sendNotifySync()
-    {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\consumer\proxy\ProducerService_sendNotifySync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\consumer\proxy\ProducerService_sendNotifySync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendNotifySync failed: unknown result");
-    }
-
-    public function sendNotifyAsync(\didi\carrera\consumer\proxy\Notify $notify)
-    {
-        $this->send_sendNotifyAsync($notify);
-        return $this->recv_sendNotifyAsync();
-    }
-
-    public function send_sendNotifyAsync(\didi\carrera\consumer\proxy\Notify $notify)
-    {
-        $args = new \didi\carrera\consumer\proxy\ProducerService_sendNotifyAsync_args();
-        $args->notify = $notify;
-        $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-        if ($bin_accel) {
-            thrift_protocol_write_binary($this->output_, 'sendNotifyAsync', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-        } else {
-            $this->output_->writeMessageBegin('sendNotifyAsync', TMessageType::CALL, $this->seqid_);
-            $args->write($this->output_);
-            $this->output_->writeMessageEnd();
-            $this->output_->getTransport()->flush();
-        }
-    }
-
-    public function recv_sendNotifyAsync()
-    {
-        $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-        if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\didi\carrera\consumer\proxy\ProducerService_sendNotifyAsync_result', $this->input_->isStrictRead());
-        else {
-            $rseqid = 0;
-            $fname = null;
-            $mtype = 0;
-
-            $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-            if ($mtype == TMessageType::EXCEPTION) {
-                $x = new TApplicationException();
-                $x->read($this->input_);
-                $this->input_->readMessageEnd();
-                throw $x;
-            }
-            $result = new \didi\carrera\consumer\proxy\ProducerService_sendNotifyAsync_result();
-            $result->read($this->input_);
-            $this->input_->readMessageEnd();
-        }
-        if ($result->success !== null) {
-            return $result->success;
-        }
-        throw new \Exception("sendNotifyAsync failed: unknown result");
-    }
-
 }
 
 // HELPER FUNCTIONS AND STRUCTURES
 
-class ProducerService_sendSync_args
+class ConsumerService_pull_args
 {
     static $_TSPEC;
 
@@ -412,7 +297,7 @@ class ProducerService_sendSync_args
 
 }
 
-class ProducerService_sendSync_result
+class ConsumerService_pull_result
 {
     static $_TSPEC;
 
@@ -494,7 +379,7 @@ class ProducerService_sendSync_result
 
 }
 
-class ProducerService_sendBatchSync_args
+class ConsumerService_submit_args
 {
     static $_TSPEC;
 
@@ -597,7 +482,7 @@ class ProducerService_sendBatchSync_args
 
 }
 
-class ProducerService_sendBatchSync_result
+class ConsumerService_submit_result
 {
     static $_TSPEC;
 
@@ -679,7 +564,7 @@ class ProducerService_sendBatchSync_result
 
 }
 
-class ProducerService_sendAsync_args
+class ConsumerService_getConsumeStats_args
 {
     static $_TSPEC;
 
@@ -761,7 +646,7 @@ class ProducerService_sendAsync_args
 
 }
 
-class ProducerService_sendAsync_result
+class ConsumerService_getConsumeStats_result
 {
     static $_TSPEC;
 
@@ -843,7 +728,7 @@ class ProducerService_sendAsync_result
 
 }
 
-class ProducerService_sendNotifySync_args
+class ConsumerService_fetch_args
 {
     static $_TSPEC;
 
@@ -948,7 +833,7 @@ class ProducerService_sendNotifySync_args
 
 }
 
-class ProducerService_sendNotifySync_result
+class ConsumerService_fetch_result
 {
     static $_TSPEC;
 
@@ -1030,7 +915,7 @@ class ProducerService_sendNotifySync_result
 
 }
 
-class ProducerService_sendNotifyAsync_args
+class ConsumerService_ack_args
 {
     static $_TSPEC;
 
@@ -1112,7 +997,7 @@ class ProducerService_sendNotifyAsync_args
 
 }
 
-class ProducerService_sendNotifyAsync_result
+class ConsumerService_ack_result
 {
     static $_TSPEC;
 

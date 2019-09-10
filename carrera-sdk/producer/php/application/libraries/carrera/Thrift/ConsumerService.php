@@ -175,7 +175,6 @@ class ConsumerServiceClient implements \didi\carrera\consumer\proxy\ConsumerServ
         $rseqid = 0;
         $fname = null;
         $mtype = 0;
-
         $this->input_->readMessageBegin($fname, $mtype, $rseqid);
         if ($mtype == TMessageType::EXCEPTION) {
             $x = new TApplicationException();
@@ -183,7 +182,6 @@ class ConsumerServiceClient implements \didi\carrera\consumer\proxy\ConsumerServ
             $this->input_->readMessageEnd();
             throw $x;
         }
-
         $result->read($this->input_);
         $this->input_->readMessageEnd();
         if ($result->success !== null) {
@@ -1100,114 +1098,5 @@ class ConsumerService_ack_result
         $xfer += $output->writeFieldStop();
         $xfer += $output->writeStructEnd();
         return $xfer;
-    }
-}
-
-class ConsumerServiceProcessor
-{
-    protected $handler_ = null;
-
-    public function __construct($handler)
-    {
-        $this->handler_ = $handler;
-    }
-
-    public function process($input, $output)
-    {
-        $rseqid = 0;
-        $fname = null;
-        $mtype = 0;
-
-        $input->readMessageBegin($fname, $mtype, $rseqid);
-        $methodname = 'process_' . $fname;
-        if (!method_exists($this, $methodname)) {
-            $input->skip(TType::STRUCT);
-            $input->readMessageEnd();
-            $x = new TApplicationException('Function ' . $fname . ' not implemented.', TApplicationException::UNKNOWN_METHOD);
-            $output->writeMessageBegin($fname, TMessageType::EXCEPTION, $rseqid);
-            $x->write($output);
-            $output->writeMessageEnd();
-            $output->getTransport()->flush();
-            return null;
-        }
-        $this->$methodname($rseqid, $input, $output);
-        return true;
-    }
-
-    protected function process_pull($seqid, $input, $output)
-    {
-        $args = new \didi\carrera\consumer\proxy\ConsumerService_pull_args();
-        $args->read($input);
-        $input->readMessageEnd();
-        $result = new \didi\carrera\consumer\proxy\ConsumerService_pull_result();
-        try {
-            $result->success = $this->handler_->pull($args->request);
-        } catch (\didi\carrera\consumer\proxy\PullException $error) {
-            $result->error = $error;
-        }
-        $output->writeMessageBegin('pull', TMessageType::REPLY, $seqid);
-        $result->write($output);
-        $output->writeMessageEnd();
-        $output->getTransport()->flush();
-    }
-
-    protected function process_submit($seqid, $input, $output)
-    {
-        $args = new \didi\carrera\consumer\proxy\ConsumerService_submit_args();
-        $args->read($input);
-        $input->readMessageEnd();
-        $result = new \didi\carrera\consumer\proxy\ConsumerService_submit_result();
-        try {
-            $result->success = $this->handler_->submit($args->result);
-        } catch (\didi\carrera\consumer\proxy\PullException $error) {
-            $result->error = $error;
-        }
-        $output->writeMessageBegin('submit', TMessageType::REPLY, $seqid);
-        $result->write($output);
-        $output->writeMessageEnd();
-        $output->getTransport()->flush();
-    }
-
-    protected function process_getConsumeStats($seqid, $input, $output)
-    {
-        $args = new \didi\carrera\consumer\proxy\ConsumerService_getConsumeStats_args();
-        $args->read($input);
-        $input->readMessageEnd();
-        $result = new \didi\carrera\consumer\proxy\ConsumerService_getConsumeStats_result();
-        try {
-            $result->success = $this->handler_->getConsumeStats($args->request);
-        } catch (\didi\carrera\consumer\proxy\PullException $error) {
-            $result->error = $error;
-        }
-        $output->writeMessageBegin('getConsumeStats', TMessageType::REPLY, $seqid);
-        $result->write($output);
-        $output->writeMessageEnd();
-        $output->getTransport()->flush();
-    }
-
-    protected function process_fetch($seqid, $input, $output)
-    {
-        $args = new \didi\carrera\consumer\proxy\ConsumerService_fetch_args();
-        $args->read($input);
-        $input->readMessageEnd();
-        $result = new \didi\carrera\consumer\proxy\ConsumerService_fetch_result();
-        $result->success = $this->handler_->fetch($args->request);
-        $output->writeMessageBegin('fetch', TMessageType::REPLY, $seqid);
-        $result->write($output);
-        $output->writeMessageEnd();
-        $output->getTransport()->flush();
-    }
-
-    protected function process_ack($seqid, $input, $output)
-    {
-        $args = new \didi\carrera\consumer\proxy\ConsumerService_ack_args();
-        $args->read($input);
-        $input->readMessageEnd();
-        $result = new \didi\carrera\consumer\proxy\ConsumerService_ack_result();
-        $result->success = $this->handler_->ack($args->result);
-        $output->writeMessageBegin('ack', TMessageType::REPLY, $seqid);
-        $result->write($output);
-        $output->writeMessageEnd();
-        $output->getTransport()->flush();
     }
 }

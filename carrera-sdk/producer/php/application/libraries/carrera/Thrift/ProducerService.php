@@ -176,7 +176,6 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
         $rseqid = 0;
         $fname = null;
         $mtype = 0;
-
         $this->input_->readMessageBegin($fname, $mtype, $rseqid);
         if ($mtype == TMessageType::EXCEPTION) {
             $x = new TApplicationException();
@@ -186,7 +185,6 @@ class ProducerServiceClient implements \didi\carrera\producer\proxy\ProducerServ
         }
         $result->read($this->input_);
         $this->input_->readMessageEnd();
-
         if ($result->success !== null) {
             return $result->success;
         }

@@ -11,4 +11,10 @@ class Consumer extends CI_Controller {
         $ret = $this->thriftconsumer->pull('cg_1', 'tp1');
         var_dump($ret);
     }
+
+    public function getConsumeStats() {
+        $this->load->library('carrera/ThriftConsumer');
+        $ret = $this->thriftconsumer->getConsumeStats('cg_1', 'tp1');
+        var_dump($ret);
+    }
 }

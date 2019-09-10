@@ -10,6 +10,7 @@ require_once $GLOBALS['THRIFT_ROOT'].'/Transport/TSocket.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Protocol/TProtocol.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Protocol/TBinaryProtocol.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Protocol/TCompactProtocol.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/Protocol/TProtocolDecorator.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Transport/TBufferedTransport.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Transport/TFramedTransport.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Type/TMessageType.php';
@@ -22,6 +23,7 @@ require_once $GLOBALS['THRIFT_ROOT'].'/Exception/TException.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Exception/TTransportException.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Exception/TProtocolException.php';
 require_once $GLOBALS['THRIFT_ROOT'].'/Exception/TApplicationException.php';
+require_once $GLOBALS['THRIFT_ROOT'].'/StoredMessageProtocol.php';
 
 require_once __DIR__ . '/Thrift/ProducerService.php';
 require_once __DIR__ . '/Thrift/ProducerTypes.php';

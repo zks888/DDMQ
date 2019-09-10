@@ -70,7 +70,7 @@ class ThriftProducer
     {
         $ci = get_instance();
         $ci->load->config('config_carrera_cluster', true);
-        $aConfig = $ci->config->item('carrera', 'config_carrera_cluster');
+        $aConfig = $ci->config->item('product', 'config_carrera_cluster');
         $this->proxyList = $aConfig['CARRERA_PROXY_LIST'];
         $this->proxyTimeout = $aConfig['CARRERA_PROXY_TIMEOUT'];
         $this->clientRetry = $aConfig['CARRERA_CLIENT_RETRY'];

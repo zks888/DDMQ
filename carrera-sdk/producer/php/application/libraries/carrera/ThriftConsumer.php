@@ -2,9 +2,10 @@
 require_once __DIR__ . '/thriftconf.php';
 
 use didi\carrera\consumer\proxy\PullRequest;
-use didi\carrera\consumer\proxy\ConsumeResult;
 use didi\carrera\consumer\proxy\ConsumerServiceClient;
 
+use Thrift\Type\TMessageType;
+use Thrift\StoredMessageProtocol;
 use Thrift\Protocol\TCompactProtocol;
 use Thrift\Transport\TFramedTransport;
 use Thrift\Transport\TSocket;
@@ -15,10 +16,14 @@ class ThriftConsumer
     const REQ_LOG = 'mq.log';
     // 异常log
     const DROP_LOG = 'drop.log';
-    // 一次取几条数据
+    //拉取消息失败时的延迟重试间隔
+    const RETRY_INTERVAL = 2;
+    //提交消费状态的最大重试次数
+    const SUBMIT_MAX_RETRIES = 2;
+    // 一次拉取能获取到的最大消息条数，服务端根据此值和服务端的配置，取最小值
     const MAX_BATCH_SIZE = 1;
-    //
-    const MAX_LINGER_TIME = 60;
+    // 拉取消息时，在服务端等待消息的最长时间
+    const MAX_LINGER_TIME = 5;
     // 日志格式2016-10-31 12:02:01 || {msg}
     const LOG_FORMAT = "%s || %s";
     /*  ...  */
@@ -56,24 +61,15 @@ class ThriftConsumer
      */
     private $proxyTimeout = 50;
 
-    /**
-     * default client retry time is 3
-     *
-     * @var float
-     * @access private
-     */
-    private $clientRetry = 2;
-
     private $log_path;
 
     public function __construct()
     {
         $ci = get_instance();
         $ci->load->config('config_carrera_cluster', true);
-        $aConfig = $ci->config->item('carrera', 'config_carrera_cluster');
+        $aConfig = $ci->config->item('consumer', 'config_carrera_cluster');
         $this->proxyList = $aConfig['CARRERA_PROXY_LIST'];
         $this->proxyTimeout = $aConfig['CARRERA_PROXY_TIMEOUT'];
-        $this->clientRetry = $aConfig['CARRERA_CLIENT_RETRY'];
         $this->clientTimeout = $aConfig['CARRERA_CLIENT_TIMEOUT'];
         $this->log_path = $aConfig['CARRERA_CLIENT_LOGPATH'];
     }
@@ -162,49 +158,47 @@ class ThriftConsumer
     {
         $proxyAddr = null;
         $tmpProxyList = $this->proxyList;
-        $retryCount = 0;
-        do {
-            try {
-                if ($proxyAddr != null) {
-                    if (count($tmpProxyList) <= 1) {
-                        $tmpProxyList = $this->proxyList;
-                    } else {
-                        $rmProxyIndex = array_search($proxyAddr, $tmpProxyList);
-                        unset($tmpProxyList[$rmProxyIndex]);
-                    }
-                }
-                $proxyIndex = array_rand($tmpProxyList, 1);
-                $proxyAddr = $tmpProxyList[$proxyIndex];
 
-                list($hostname, $port) = explode(':', $proxyAddr);
-                $socket = new TSocket($hostname, $port);
-                $socket->setSendTimeout($this->clientTimeout);
-                $socket->setRecvTimeout($this->clientTimeout);
-                $transport = new TFramedTransport($socket);
-                $transport->open();
-                $protocol = new TCompactProtocol($transport);
-                $client = new ConsumerServiceClient($protocol);
-
-                $ret = $client->pull($request);
-                $transport->close();
-                $result = array(
-                    'ret' => $ret,
-                    'code' => self::OK,
-                    'msg' => 'success',
-                    'ip' => $proxyAddr
-                );
-                if ($ret->code <= self::CACHE_OK) {
-                    return $result;
+        try {
+            if ($proxyAddr != null) {
+                if (count($tmpProxyList) <= 1) {
+                    $tmpProxyList = $this->proxyList;
+                } else {
+                    $rmProxyIndex = array_search($proxyAddr, $tmpProxyList);
+                    unset($tmpProxyList[$rmProxyIndex]);
                 }
-            } catch (\Exception $e) {
-                $transport->close();
-                $result = array(
-                    'code' => self::CLIENT_EXCEPTION,
-                    'msg' => $e->getMessage(),
-                    'ip' => $proxyAddr
-                );
             }
-        } while ($retryCount++ < $this->clientRetry);
+            $proxyIndex = array_rand($tmpProxyList, 1);
+            $proxyAddr = $tmpProxyList[$proxyIndex];
+
+            list($hostname, $port) = explode(':', $proxyAddr);
+            $socket = new TSocket($hostname, $port);
+            $socket->setSendTimeout($this->clientTimeout);
+            $socket->setRecvTimeout($this->clientTimeout);
+            $transport = new TFramedTransport($socket);
+            $transport->open();
+            $protocol = new TCompactProtocol($transport);
+            $client = new ConsumerServiceClient($protocol);
+
+            $ret = $client->pull($request);
+            $transport->close();
+            $result = array(
+                'ret' => $ret,
+                'code' => self::OK,
+                'msg' => 'success',
+                'ip' => $proxyAddr
+            );
+            if ($result['code'] <= self::CACHE_OK) {
+                return $result;
+            }
+        } catch (\Exception $e) {
+            $transport->close();
+            $result = array(
+                'code' => self::CLIENT_EXCEPTION,
+                'msg' => $e->getMessage(),
+                'ip' => $proxyAddr
+            );
+        }
 
         return $result;
     }

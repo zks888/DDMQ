@@ -24,6 +24,18 @@ class Consumer extends CI_Controller {
         var_dump($ret);
     }
 
+    public function submit() {
+        $this->load->library('carrera/ThriftConsumer');
+        $ret = $this->thriftconsumer->pull('cg_1', 'tp1');
+        var_dump($ret);
+        if ($ret['code'] > 0) {
+            return;
+        }
+        $context = $ret['ret']['context'];
+        $ret = $this->thriftconsumer->submit($context);
+        var_dump($ret);
+    }
+
     public function getConsumeStats() {
         $this->load->library('carrera/ThriftConsumer');
         $ret = $this->thriftconsumer->getConsumeStats('cg_1', 'tp1');

@@ -95,7 +95,7 @@ class ConsumerServiceClient implements \didi\carrera\consumer\proxy\ConsumerServ
     public function send_submit(\didi\carrera\consumer\proxy\ConsumeResult $result)
     {
         $args = new \didi\carrera\consumer\proxy\ConsumerService_submit_args();
-        $args->result($result);
+        $args->result = $result;
         $this->send_base("submit", $args);
     }
 

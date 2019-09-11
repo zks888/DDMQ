@@ -6,6 +6,8 @@ use didi\carrera\consumer\proxy\PullRequest;
 use didi\carrera\consumer\proxy\AckResult;
 use didi\carrera\consumer\proxy\ConsumeStatsRequest;
 use didi\carrera\consumer\proxy\FetchRequest;
+use didi\carrera\consumer\proxy\ConsumeResult;
+use didi\carrera\consumer\proxy\PullException;
 
 use Thrift\Protocol\TCompactProtocol;
 use Thrift\Transport\TFramedTransport;
@@ -147,9 +149,8 @@ class ThriftConsumer
             'errno' => $ret['code'],
             'errmsg' => $ret['msg'],
             'ip' => $addr,
-            'groupId' => $ret['ret']['groupId'] ?: $sGroupId,
-            'topic' => $ret['ret']['topic'] ?: $sTopic,
-            'qid' => $ret['ret']['qid'] ?: '',
+            'groupId' => $sGroupId,
+            'topic' => $sTopic,
             'maxBatchSize' => $iMaxBatchSize,
             'maxLingerTime' => $iMaxLingerTime,
             'used' => $used,
@@ -318,6 +319,71 @@ class ThriftConsumer
         return $ret;
     }
 
+    public function submit($oContext, array $aSuccessOffsets = [], array $aFailOffsets = [], $oNextResult = null)
+    {
+        $dropInfo = array(
+            'opera_stat_key' => 'carrera_drop',
+            'context' => $oContext,
+            'nextResult' => $oNextResult,
+        );
+
+        if (!isset($oContext)) {
+            return array(
+                'code' => self::MISSING_PARAMETERS,
+                'msg' => 'missing parameters'
+            );
+        }
+
+        $request = new ConsumeResult(array(
+            'context' => $oContext,
+            'successOffsets' => $aSuccessOffsets,
+            'failOffsets' => $aFailOffsets,
+            'nextResult' => $oNextResult
+        ));
+
+        $startTime = microtime(true);
+        try {
+            $ret = $this->pullWithThrift('submit', $request);
+            switch ($ret['code']) {
+                case self::OK:
+                    $status = 'success';
+                    break;
+                case self::CACHE_OK:
+                    $status = 'cache_ok';
+                    break;
+                default:
+                    $status = 'failure';
+                    break;
+            }
+        } catch (\Exception $e) {
+            $ret = array(
+                'code' => self::CLIENT_EXCEPTION,
+                'msg' => $e->getMessage(),
+            );
+            $status = 'failure';
+        }
+        $used = (microtime(true) - $startTime) * 1000;
+        $addr = $ret['ip'];
+
+        $logInfo = array(
+            'opera_stat_key' => 'carrera_trace',
+            'result' => $status,
+            'errno' => $ret['code'],
+            'errmsg' => $ret['msg'],
+            'ip' => $addr,
+            'used' => $used
+        );
+
+        if ($ret['code'] > self::CACHE_OK) {
+            $dropInfo['errno'] = $ret['code'];
+            $dropInfo['errmsg'] = $ret['msg'];
+            $this->writeLog($this->log_path . self::DROP_LOG, $dropInfo);
+        }
+        $this->writeLog($this->log_path . self::REQ_LOG, $logInfo);
+
+        return $ret;
+    }
+
     public function getConsumeStats($sGroup, $sTopic = null)
     {
         $dropInfo = array(
@@ -418,9 +484,7 @@ class ThriftConsumer
                     case 'pull':
                         if ($response && $response->context->qid) {
                             $ret = [
-                                'groupId' => $response->context->groupId,
-                                'topic' => $response->context->topic,
-                                'qid' => $response->context->qid,
+                                'context' => $response->context,
                                 'messages' => $response->messages
                             ];
                             $result = array(
@@ -432,9 +496,8 @@ class ThriftConsumer
                             return $result;
                         }
                         break;
-                    case 'ack':
                     default:
-                        if ($response) {
+                        if ($response !== null) {
                             $result = array(
                                 'ret' => $response,
                                 'code' => self::OK,
@@ -448,6 +511,15 @@ class ThriftConsumer
                 $result = array(
                     'code' => self::CLIENT_EXCEPTION,
                     'msg' => 'failure',
+                    'ip' => $proxyAddr
+                );
+            } catch (PullException $e) {
+                if (isset($transport)) {
+                    $transport->close();
+                }
+                $result = array(
+                    'code' => self::CLIENT_EXCEPTION,
+                    'msg' => $e->getMessage(),
                     'ip' => $proxyAddr
                 );
             } catch (\Exception $e) {

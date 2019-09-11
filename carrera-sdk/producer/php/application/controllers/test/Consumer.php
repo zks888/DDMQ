@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @property ThriftConsumer thriftconsumer
+ */
 class Consumer extends CI_Controller {
 
     public function index() {
@@ -30,7 +33,7 @@ class Consumer extends CI_Controller {
         var_dump($ret);
     }
 
-    public function submit() {
+    public function consume() {
         $this->load->library('carrera/ThriftConsumer');
         $ret = $this->thriftconsumer->pull('cg_1', 'tp1');
         if ($ret['code'] > 0) {
@@ -42,20 +45,18 @@ class Consumer extends CI_Controller {
         $aSuccessOffsets = [];
         $aFailOffsets = [];
         foreach ($messages as $message) {
-            if (mt_rand(1,100) > 50) {
+            if ($this->callback($message->value)) {
                 $aSuccessOffsets[] = $message->offset;
             } else {
                 $aFailOffsets[] = $message->offset;
             }
-            echo "msg: ".$message->value."\r\n";
         }
         $ret = $this->thriftconsumer->submit($context, $aSuccessOffsets, $aFailOffsets);
         var_dump($ret);
     }
 
-    public function getConsumeStats() {
-        $this->load->library('carrera/ThriftConsumer');
-        $ret = $this->thriftconsumer->getConsumeStats('cg_1', 'tp1');
-        var_dump($ret);
+    private function callback($value) {
+        echo "msg: ".$value."\r\n";
+        return (mt_rand(1,100) > 50);
     }
 }

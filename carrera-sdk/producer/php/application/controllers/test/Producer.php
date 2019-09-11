@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @property ThriftProducer thriftproducer
+ */
 class Producer extends CI_Controller {
 
     public function index() {

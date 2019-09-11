@@ -26,7 +26,7 @@ class ThriftConsumer
     // 一次拉取能获取到的最大消息条数，服务端根据此值和服务端的配置，取最小值
     const MAX_BATCH_SIZE = 1;
     // 拉取消息时，在服务端等待消息的最长时间
-    const MAX_LINGER_TIME = 5;
+    const MAX_LINGER_TIME = 50;
     // 日志格式2016-10-31 12:02:01 || {msg}
     const LOG_FORMAT = "%s || %s";
     /*  ...  */
@@ -319,7 +319,7 @@ class ThriftConsumer
         return $ret;
     }
 
-    public function submit($oContext, array $aSuccessOffsets = [], array $aFailOffsets = [], $oNextResult = null)
+    public function submit($oContext, array $aSuccessOffsets, array $aFailOffsets, $oNextResult = null)
     {
         $dropInfo = array(
             'opera_stat_key' => 'carrera_drop',
@@ -327,7 +327,7 @@ class ThriftConsumer
             'nextResult' => $oNextResult,
         );
 
-        if (!isset($oContext)) {
+        if (!isset($oContext) || !isset($aSuccessOffsets) || !isset($aFailOffsets)) {
             return array(
                 'code' => self::MISSING_PARAMETERS,
                 'msg' => 'missing parameters'

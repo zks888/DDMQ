@@ -428,6 +428,8 @@ class ThriftConsumer
                                 'ip' => $proxyAddr
                             );
                             return $result;
+                        } else {
+                            sleep(self::RETRY_INTERVAL);
                         }
                         break;
                     default:

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+WEBAPPS="/usr/local/Cellar/tomcat/9.0.24/libexec/webapps"
+
+function start() {
+	OLD_PID="`pgrep -f org.apache.catalina.startup.Bootstrap`"
+    if [ "$OLD_PID" ]; then
+        echo "tomcat is already running, pid=$OLD_PID. Stop it first!" >> control.log
+        exit 1
+    fi
+
+    rm -rf $WEBAPPS/carrera
+    rm $WEBAPPS/carrera.war
+    cp carrera.war $WEBAPPS
+    echo "tomcat started" >> control.log
+    nohup catalina run >> control.log 2>&1 &
+}
+
+function stop() {
+	if [[ `pgrep -f org.apache.catalina.startup.Bootstrap` ]]; then
+		pkill -9 -f org.apache.catalina.startup.Bootstrap
+	fi
+	t=0
+	while [[ `pgrep -f org.apache.catalina.startup.Bootstrap` && "$t" -lt 30 ]]; do
+		sleep 1
+	done
+	if [[ `pgrep -f org.apache.catalina.startup.Bootstrap` ]]; then
+		echo "stop tomcat failed" >> control.log
+		exit 1
+	fi
+	echo "tomcat stopped" >> control.log
+}
+
+case "$1" in
+    "start")
+		start
+		;;
+	"stop")
+		stop
+		;;
+	"reload")
+		stop
+		start
+		;;
+	*)
+		echo "supporting cmd: start/stop/reload"
+		;;
+esac

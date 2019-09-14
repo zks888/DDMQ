@@ -15,12 +15,12 @@ fi
 
 # run mysql container
 echo 'start mysql container...'
-docker run -td --rm --name mysql --network bridge --ip 172.17.0.2 -p 127.0.0.1:3307:3306 mysql:1.1
+docker run -td --rm --name mysql --network ddmq-net --ip 172.18.0.2 -p 127.0.0.1:3307:3306 mysql:1.1
 
 # run ddmq container
 echo 'start ddmq container n01.'
-docker run -it --rm --name ddmqn01 --network bridge --ip 172.17.0.3 -p 127.0.0.1:8080:8080 --link mysql ddmq:n01
+docker run -td --rm --name ddmqn01 --network ddmq-net --ip 172.18.0.3 -p 127.0.0.1:8080:8080 --add-host=mysql:172.18.0.2 ddmq:n01
 
 # run ddmq container
 echo 'start ddmq container n02.'
-docker run -it --rm --name ddmqn02 --network bridge --ip 172.17.0.4 --link mysql ddmq:n02
+docker run -td --rm --name ddmqn02 --network ddmq-net --ip 172.18.0.4 --add-host=mysql:172.18.0.2 ddmq:n02

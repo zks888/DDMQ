@@ -1,3 +1,9 @@
+while ! nc -z 172.18.0.3 8080; do
+  sleep 0.1
+done
+
+curl http://172.18.0.3:8080/carrera/api/odin/internal/v4/initZkPath
+curl http://172.18.0.3:8080/carrera/api/odin/internal/v4/initAllZk
 
 cd /root/namesvr && sh ./control.sh start
 cd /root/broker && sh ./control.sh start

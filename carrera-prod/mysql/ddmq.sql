@@ -245,7 +245,7 @@ CREATE TABLE `mq_server` (
 
 LOCK TABLES `mq_server` WRITE;
 /*!40000 ALTER TABLE `mq_server` DISABLE KEYS */;
-INSERT INTO `mq_server` VALUES (1,'R_default','rocketmq','127.0.0.1:9876',0,1,'default',0,'2017-04-17 14:56:17','2018-12-28 12:37:38');
+INSERT INTO `mq_server` VALUES (1,'R_default','rocketmq','172.18.0.3:9876',0,1,'default',0,'2017-04-17 14:56:17','2018-12-28 12:37:38'),(2,'R_default','rocketmq','172.18.0.4:9876',0,1,'default',0,'2017-04-17 14:56:17','2018-12-28 12:37:38');
 /*!40000 ALTER TABLE `mq_server` ENABLE KEYS */;
 UNLOCK TABLES;
 

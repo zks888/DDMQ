@@ -27,15 +27,13 @@ RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-
   && cp zookeeper-3.4.10/conf/zoo_sample.cfg zookeeper-3.4.10/conf/zoo.cfg 
 
 RUN mkdir -p \
- /root/logs/rocketmqlogs \
- /root/store \
+ /root/rocketmq/logs \
  /root/chronos-storage/rocksdb \
  /root/chronos-storage/seektimestamp \
  /root/chronos-storage/rocksdb_backup \
  /root/chronos-storage/rocksdb_restore
 
 # copy
-COPY console ${HOME_DIR}/console
 COPY consumer ${HOME_DIR}/consumer
 COPY producer ${HOME_DIR}/producer
 COPY chronos ${HOME_DIR}/chronos

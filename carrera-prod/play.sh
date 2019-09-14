@@ -23,4 +23,4 @@ docker run -it --rm -p 127.0.0.1:8080:8080 --name ddmq --link mysql ddmq:n01
 
 # run ddmq container
 echo 'start ddmq container n02.'
-docker run -it --rm -p 127.0.0.1:8081:8080 --name ddmq --link mysql ddmq:n02
+docker run -it --rm -p --name ddmq --link mysql ddmq:n02

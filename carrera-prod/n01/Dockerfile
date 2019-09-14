@@ -27,8 +27,7 @@ RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-
   && cp zookeeper-3.4.10/conf/zoo_sample.cfg zookeeper-3.4.10/conf/zoo.cfg 
 
 RUN mkdir -p \
- /root/logs/rocketmqlogs \
- /root/store \
+ /root/rocketmq/logs \
  /root/chronos-storage/rocksdb \
  /root/chronos-storage/seektimestamp \
  /root/chronos-storage/rocksdb_backup \

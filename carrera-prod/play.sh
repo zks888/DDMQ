@@ -14,7 +14,7 @@ if [[ "$(docker images -q ddmq:n02 2> /dev/null)" == "" ]]; then
 fi
 
 # build ddmq image
-if [[ "$(docker images -q ddmq:n02 2> /dev/null)" == "" ]]; then
+if [[ "$(docker images -q ddmq:n03 2> /dev/null)" == "" ]]; then
   docker build -t ddmq:n03 ./n03
 fi
 

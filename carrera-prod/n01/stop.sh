@@ -1,5 +1,5 @@
 
-sh /root/zookeeper-3.4.10/bin/zkServer.sh stop
+sh /root/zookeeper/bin/zkServer.sh stop
 cd /root/console && sh ./control.sh stop
 
 cd /root/namesvr && sh ./control.sh stop

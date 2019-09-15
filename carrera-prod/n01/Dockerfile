@@ -23,8 +23,13 @@ RUN curl http://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.24/bin/apache-tomc
 
 RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz -o zookeeper-3.4.10.tar.gz \
   && tar xzvf zookeeper-3.4.10.tar.gz \
-  && rm zookeeper-3.4.10.tar.gz \ 
-  && cp zookeeper-3.4.10/conf/zoo_sample.cfg zookeeper-3.4.10/conf/zoo.cfg 
+  && mv zookeeper-3.4.10 zookeeper \
+  && rm zookeeper-3.4.10.tar.gz \
+  && cp zookeeper/conf/zoo_sample.cfg zookeeper/conf/zoo.cfg \
+  && echo "server.1=172.18.0.3:2888:3888" >> zookeeper/conf/zoo.cfg \
+  && echo "server.2=172.18.0.4:2888:3888" >> zookeeper/conf/zoo.cfg \
+  && mkdir zookeeper/data \
+  && echo '1' > zookeeper/data/myid
 
 RUN mkdir -p \
  /root/rocketmq/logs \

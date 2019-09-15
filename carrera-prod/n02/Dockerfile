@@ -34,6 +34,7 @@ RUN mkdir -p \
  /root/chronos-storage/rocksdb_restore
 
 # copy
+COPY console ${HOME_DIR}/console
 COPY consumer ${HOME_DIR}/consumer
 COPY producer ${HOME_DIR}/producer
 COPY chronos ${HOME_DIR}/chronos

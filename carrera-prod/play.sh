@@ -23,4 +23,4 @@ docker run -td --rm --name ddmqn01 --network ddmq-net --ip 172.18.0.3 -p 127.0.0
 
 # run ddmq container
 echo 'start ddmq container n02.'
-docker run -td --rm --name ddmqn02 --network ddmq-net --ip 172.18.0.4 -p 127.0.0.1:9614:9613 -p 127.0.0.1:9714:9713 --add-host=mysql:172.18.0.2 ddmq:n02
+docker run -td --rm --name ddmqn02 --network ddmq-net --ip 172.18.0.4 -p 127.0.0.1:8081:8080 -p 127.0.0.1:9614:9613 -p 127.0.0.1:9714:9713 --add-host=mysql:172.18.0.2 ddmq:n02

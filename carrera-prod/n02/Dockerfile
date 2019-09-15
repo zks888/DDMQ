@@ -26,8 +26,10 @@ RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-
   && mv zookeeper-3.4.10 zookeeper \
   && rm zookeeper-3.4.10.tar.gz \ 
   && cp zookeeper/conf/zoo_sample.cfg zookeeper/conf/zoo.cfg \
+  && echo "dataDir=/root/zookeeper/data" >> zookeeper/conf/zoo.cfg \
   && echo "server.1=172.18.0.3:2888:3888" >> zookeeper/conf/zoo.cfg \
   && echo "server.2=172.18.0.4:2888:3888" >> zookeeper/conf/zoo.cfg \
+  && echo "server.3=172.18.0.5:2888:3888" >> zookeeper/conf/zoo.cfg \
   && mkdir zookeeper/data \
   && echo '2' > zookeeper/data/myid
 

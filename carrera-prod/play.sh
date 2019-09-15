@@ -13,6 +13,11 @@ if [[ "$(docker images -q ddmq:n02 2> /dev/null)" == "" ]]; then
   docker build -t ddmq:n02 ./n02
 fi
 
+# build ddmq image
+if [[ "$(docker images -q ddmq:n02 2> /dev/null)" == "" ]]; then
+  docker build -t ddmq:n03 ./n03
+fi
+
 # run mysql container
 echo 'start mysql container...'
 docker run -td --rm --name mysql --network ddmq-net --ip 172.18.0.2 -p 127.0.0.1:3307:3306 mysql:1.1
@@ -24,3 +29,7 @@ docker run -td --rm --name ddmqn01 --network ddmq-net --ip 172.18.0.3 -p 127.0.0
 # run ddmq container
 echo 'start ddmq container n02.'
 docker run -td --rm --name ddmqn02 --network ddmq-net --ip 172.18.0.4 -p 127.0.0.1:8081:8080 -p 127.0.0.1:9614:9613 -p 127.0.0.1:9714:9713 --add-host=mysql:172.18.0.2 ddmq:n02
+
+# run ddmq container
+echo 'start ddmq container n03.'
+docker run -td --rm --name ddmqn03 --network ddmq-net --ip 172.18.0.5 -p 127.0.0.1:8082:8080 -p 127.0.0.1:9615:9613 -p 127.0.0.1:9715:9713 --add-host=mysql:172.18.0.2 ddmq:n03

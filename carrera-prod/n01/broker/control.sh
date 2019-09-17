@@ -34,11 +34,11 @@ function start() {
 
 
     cd ${workspace}
-    nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-a.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-a.log 2>&1 &
-    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-a.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-a.log 2>&1 &"
+    nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-a.properties -n"172.18.0.3:9876;172.18.0.4:9876;172.18.0.5:9876" >> ${LOG_HOME}/broker-a.log 2>&1 &
+    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-a.properties -n"172.18.0.3:9876;172.18.0.4:9876;172.18.0.5:9876" >> ${LOG_HOME}/broker-a.log 2>&1 &"
 
-    nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-b-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b-s.log 2>&1 &
-    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-b-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b-s.log 2>&1 &"
+    nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-b-s.properties -n"172.18.0.3:9876;172.18.0.4:9876;172.18.0.5:9876" >> ${LOG_HOME}/broker-b-s.log 2>&1 &
+    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-b-s.properties -n"172.18.0.3:9876;172.18.0.4:9876;172.18.0.5:9876" >> ${LOG_HOME}/broker-b-s.log 2>&1 &"
 
     get_pid
     t=0

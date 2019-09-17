@@ -24,7 +24,7 @@ RUN curl http://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.24/bin/apache-tomc
 RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz -o zookeeper-3.4.10.tar.gz \
   && tar xzvf zookeeper-3.4.10.tar.gz \
   && mv zookeeper-3.4.10 zookeeper \
-  && rm zookeeper-3.4.10.tar.gz \ 
+  && rm zookeeper-3.4.10.tar.gz \
   && cp zookeeper/conf/zoo_sample.cfg zookeeper/conf/zoo.cfg \
   && echo "dataDir=/root/zookeeper/data" >> zookeeper/conf/zoo.cfg \
   && echo "server.1=172.18.0.3:2888:3888" >> zookeeper/conf/zoo.cfg \
@@ -33,10 +33,20 @@ RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-
   && mkdir zookeeper/data \
   && echo '3' > zookeeper/data/myid
 
+RUN mkdir -p \
+ /root/rocketmq/logs \
+ /root/chronos-storage/rocksdb \
+ /root/chronos-storage/seektimestamp \
+ /root/chronos-storage/rocksdb_backup \
+ /root/chronos-storage/rocksdb_restore
+
 # copy
 COPY console ${HOME_DIR}/console
 COPY consumer ${HOME_DIR}/consumer
 COPY producer ${HOME_DIR}/producer
+COPY chronos ${HOME_DIR}/chronos
+COPY broker ${HOME_DIR}/broker
+COPY namesvr ${HOME_DIR}/namesvr
 COPY start.sh ${HOME_DIR}/start.sh
 COPY stop.sh ${HOME_DIR}/stop.sh
 

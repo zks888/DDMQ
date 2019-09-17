@@ -1,10 +1,6 @@
 #!/bin/bash
-MAIN_CLASS=rocketmq.broker.BrokerStartup
-LOG_HOME="${HOME}"/rocketmq/logs
 
-mkdir -p ${LOG_HOME}
-mkdir -p "${HOME}"/rocketmq/broker-b/store
-mkdir -p "${HOME}"/rocketmq/broker-c-s/store
+MAIN_CLASS=rocketmq.namesrv.NamesrvStartup
 
 function get_pid() {
     PID=$(ps ax | grep -i ${MAIN_CLASS} |grep java | grep -v grep | awk '{print $1}')
@@ -17,28 +13,8 @@ function start() {
         exit 1
     fi
 
-    echo "back up logs"
-    if [ -d ${LOG_HOME} ]; then
-        cd ${LOG_HOME}
-        for f in $(ls ${LOG_HOME})
-        do
-            if [ -d $f ]; then
-                continue;
-            fi
-            if [ -f otherdays/$f ]; then
-                mv otherdays/$f otherdays/$f.old
-            fi
-            mv $f otherdays/
-        done
-    fi
-
-
-    cd ${workspace}
-    nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-b.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b.log 2>&1 &
-    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-b.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b.log 2>&1 &"
-
-    nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-c-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-c-s.log 2>&1 &
-    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-c-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-c-s.log 2>&1 &"
+    nohup sh bin/mqnamesrv >> ns.log 2>&1 &
+    echo "running: nohup sh bin/mqnamesrv >> ns.log 2>&1 &"
 
     get_pid
     t=0

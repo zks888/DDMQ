@@ -4,7 +4,7 @@ LOG_HOME="${HOME}"/logs/rocketmqlogs
 
 mkdir -p ${LOG_HOME}
 mkdir -p "${HOME}"/rocketmq/broker-b/store
-mkdir -p "${HOME}"/rocketmq/broker-c-s/store
+mkdir -p "${HOME}"/rocketmq/broker-a-s/store
 
 function get_pid() {
     PID=$(ps ax | grep -i ${MAIN_CLASS} |grep java | grep -v grep | awk '{print $1}')
@@ -34,11 +34,11 @@ function start() {
 
 
     cd ${workspace}
-    nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-b.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b.log 2>&1 &
-    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-b.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b.log 2>&1 &"
+    nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-b.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-b.log 2>&1 &
+    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-b.properties -n'172.18.0.3:9876;172.18.0.4:9876' >> ${LOG_HOME}/broker-b.log 2>&1 &"
 
-    nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-c-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-c-s.log 2>&1 &
-    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/3m-3s-async/broker-c-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-c-s.log 2>&1 &"
+    nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-a-s.properties -n"172.18.0.3:9876;172.18.0.4:9876" >> ${LOG_HOME}/broker-a-s.log 2>&1 &
+    echo "running: nohup sh bin/mqbroker -c ${workspace}/conf/2m-2s-async/broker-a-s.properties -n'172.18.0.3:9876;172.18.0.4:9876' >> ${LOG_HOME}/broker-a-s.log 2>&1 &"
 
     get_pid
     t=0

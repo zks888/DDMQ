@@ -44,9 +44,6 @@ RUN mkdir -p \
 COPY console ${HOME_DIR}/console
 COPY consumer ${HOME_DIR}/consumer
 COPY producer ${HOME_DIR}/producer
-COPY chronos ${HOME_DIR}/chronos
-COPY broker ${HOME_DIR}/broker
-COPY namesvr ${HOME_DIR}/namesvr
 COPY start.sh ${HOME_DIR}/start.sh
 COPY stop.sh ${HOME_DIR}/stop.sh
 

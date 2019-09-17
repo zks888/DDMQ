@@ -10,9 +10,7 @@
 * 这里宿主机的MySQL的root账号密码是wawa521
 * 需要修改账号和密码，需要修改carrera-console/carrera-console/setting/carrera-console-dev.properties文件，并且重新编译
 
-3、
+3、启动
 
-* Java
-* Go
-* C/C++
+* ./play.sh
 

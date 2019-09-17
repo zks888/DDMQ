@@ -36,17 +36,11 @@ RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-
   && mkdir zookeeper/data \
   && echo '3' > zookeeper/data/myid
 
-RUN mkdir -p \
- /root/logs/rocketmqlogs \
- /root/chronos-storage/rocksdb \
- /root/chronos-storage/seektimestamp \
- /root/chronos-storage/rocksdb_backup \
- /root/chronos-storage/rocksdb_restore
-
 # copy
 COPY console ${HOME_DIR}/console
 COPY consumer ${HOME_DIR}/consumer
 COPY producer ${HOME_DIR}/producer
+COPY monitor ${HOME_DIR}/monitor
 COPY start.sh ${HOME_DIR}/start.sh
 COPY stop.sh ${HOME_DIR}/stop.sh
 

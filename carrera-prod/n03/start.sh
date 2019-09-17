@@ -11,3 +11,4 @@ curl http://localhost:8080/carrera/api/odin/internal/v4/initAllZk
 
 cd /root/consumer && sh ./control.sh start
 cd /root/producer && sh ./control.sh start
+cd /root/monitor && sh ./control.sh start

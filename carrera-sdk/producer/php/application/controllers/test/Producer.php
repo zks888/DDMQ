@@ -10,7 +10,7 @@ class Producer extends CI_Controller {
 
     public function test() {
         $this->load->library('carrera/ThriftProducer');
-        for ($i=0;$i<100;$i++) {
+        for ($i=0;$i<100000;$i++) {
             $data = json_encode([
                 'a' => 'Hello',
                 'b' => 'World',

@@ -15,7 +15,7 @@ $config['product'] = array(
 
 $config['consumer'] = array(
     // proxy list
-    'CARRERA_PROXY_LIST' => array('127.0.0.1:9715'),
+    'CARRERA_PROXY_LIST' => array('127.0.0.1:9713', '127.0.0.1:9714', '127.0.0.1:9715'),
     // time out for each send from proxy to mq broker
     'CARRERA_PROXY_TIMEOUT' => 50,
     // time out for each send from client to proxy

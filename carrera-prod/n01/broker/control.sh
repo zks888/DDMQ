@@ -1,6 +1,6 @@
 #!/bin/bash
 MAIN_CLASS=rocketmq.broker.BrokerStartup
-LOG_HOME="${HOME}"/rocketmq/logs
+LOG_HOME="${HOME}"/logs/rocketmqlogs
 
 mkdir -p ${LOG_HOME}
 mkdir -p "${HOME}"/rocketmq/broker-a/store

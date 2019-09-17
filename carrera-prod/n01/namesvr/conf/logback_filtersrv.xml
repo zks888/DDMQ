@@ -19,10 +19,10 @@
 <configuration>
     <appender name="DefaultAppender"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.home}/rocketmq/logs/filtersrv_default.log</file>
+        <file>${user.home}/logs/rocketmqlogs/filtersrv_default.log</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${user.home}/rocketmq/logs/otherdays/filtersrv_default.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${user.home}/logs/rocketmqlogs/otherdays/filtersrv_default.%i.log.gz</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>5</maxIndex>
         </rollingPolicy>
@@ -37,10 +37,10 @@
 
     <appender name="RocketmqFiltersrvAppender_inner"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.home}/rocketmq/logs/filtersrv.log</file>
+        <file>${user.home}/logs/rocketmqlogs/filtersrv.log</file>
         <append>true</append>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${user.home}/rocketmq/logs/otherdays/filtersrv.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${user.home}/logs/rocketmqlogs/otherdays/filtersrv.%i.log.gz</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>5</maxIndex>
         </rollingPolicy>

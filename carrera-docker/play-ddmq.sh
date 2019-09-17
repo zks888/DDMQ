@@ -14,4 +14,4 @@ docker run -d --rm --name mysql -p 127.0.0.1:3307:3306 -t mysql:1.0
 
 # run ddmq container
 echo 'start ddmq container.'
-docker run -i --rm -t -v /usr/local/var/rocketmq/store:/root/store -p 127.0.0.1:8080:8080 -p 127.0.0.1:9613:9613 -p 127.0.0.1:9713:9713 --name ddmq --link mysql ddmq:1.0
+docker run -it --rm -p 127.0.0.1:8080:8080 -p 127.0.0.1:9613:9613 -p 127.0.0.1:9713:9713 --name ddmq --link mysql ddmq:1.0

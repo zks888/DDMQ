@@ -12,6 +12,9 @@ ENV HOME /root
 
 WORKDIR ${HOME_DIR}
 
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+  && echo 'Asia/Shanghai' >/etc/timezone
+
 RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel unzip gettext nmap-ncat openssl wget telnet\
   && yum clean all -y
 

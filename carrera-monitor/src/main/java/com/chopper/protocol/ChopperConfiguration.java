@@ -6,6 +6,7 @@ import com.chopper.tools.PropertiesTools;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.List;
+import java.util.Arrays;
 
 public class ChopperConfiguration extends JSONObject {
     private static final String CHOPPER = "notice.properties";
@@ -88,15 +89,9 @@ public class ChopperConfiguration extends JSONObject {
      * 获取邮件收件人
      */
     public static List<String> mailReceivers(String group) {
-        List<String> receiverList = null;
-
         String receivers = get(String.format("%s.receivers", group));
         String[] receiverArr = receivers.split(",");
-
-        for (int i = 0; i < receiverArr.length; ++i) {
-            receiverList.add(receiverArr[i]);
-        }
-        return receiverList;
+        return Arrays.asList(receiverArr);
     }
 
     private static String get(String name, String defaultValue) {

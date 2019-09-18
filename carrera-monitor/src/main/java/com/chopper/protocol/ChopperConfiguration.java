@@ -103,7 +103,7 @@ public class ChopperConfiguration extends JSONObject {
         Object value = CONF_STORE.get(name);
         if (value == null) {
             if (defaultValue == null) {
-                BaseTools.throwException(String.format("%s value not be null !", name));
+                throw new RuntimeException(String.format("%s value not be null !", name));
             }
             return defaultValue;
         }

@@ -45,8 +45,7 @@ public class NoticeTools {
 
             return true;
         } catch (EmailException e) {
-            logger.error("[NoticeTools] send email error, context:{}", context, e);
-            throw new RuntimeException("[NoticeTools] send email error, context:" + context);
+            logger.error("send email error, context:{}", context, e);
         }
         return false;
     }

@@ -19,10 +19,10 @@
                :rules="formRule"
                labelAlign="top">
 
-        <bc-form-item label="Consumer Group：" prop="groupName">
+        <bc-form-item label="Consumer Group Name：" prop="groupName">
           <bc-input v-model="form.groupName"
                     :disabled='isEditing'
-                    placeholder="Please input Consumer Group">
+                    placeholder="Please input Consumer Group Name">
                     <span slot="prepend">cg_</span>
           </bc-input>
         </bc-form-item>
@@ -30,6 +30,26 @@
           <div>1. The Consumer Group name can contain only letters, numbers, underscore(_)and dashes(-)</div>
           <div>2. Once created can't modify the Consumer Group name</div>
         </div>
+
+        <bc-form-item label="Alarm Group：" prop="alarmGroup">
+          <bc-input v-model="form.alarmGroup" placeholder="Please input Alarm Group">
+          </bc-input>
+        </bc-form-item>
+
+        <bc-form-item label="Alarm Level：" prop="alarmLevel">
+          <bc-input v-model="form.alarmLevel" placeholder="Please input Alarm Level">
+          </bc-input>
+        </bc-form-item>
+
+        <bc-form-item label="Alarm Msg Lag：" prop="alarmMsgLag">
+          <bc-input v-model="form.alarmMsgLag" placeholder="Please input Alarm Msg Lag">
+          </bc-input>
+        </bc-form-item>
+
+        <bc-form-item label="Alarm Delay Time：" prop="alarmDelayTime">
+          <bc-input v-model="form.alarmDelayTime" placeholder="Please input Alarm Delay Time">
+          </bc-input>
+        </bc-form-item>
 
         <bc-form-item label="Additional Parameters">
           <div class="conf-margin" v-for="(item,i) in others" :key="i">
@@ -84,7 +104,11 @@
         others: [{ key: '', value: '' }],
         form: {
           groupId: '',
-          groupName: ''
+          groupName: '',
+          alarmGroup: null,
+          alarmLevel: 1,
+          alarmMsgLag: 10000,
+          alarmDelayTime: 300000
         },
         formRule: createGroup,
 
@@ -157,11 +181,11 @@
           service: 'Engineering',
           department: 'Software',
           contacters: 'administration;',
-          alarmGroup: null,
-          alarmLevel: 1,
+          alarmGroup: form.alarmGroup,
+          alarmLevel: form.alarmLevel,
           alarmIsEnable: 1,
-          alarmMsgLag: 10000,
-          alarmDelayTime: 300000,
+          alarmMsgLag: form.alarmMsgLag,
+          alarmDelayTime: form.alarmDelayTime,
           extraParams: {},
           broadcastConsume: 1,
           consumeMode: 1,

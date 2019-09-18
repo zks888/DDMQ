@@ -160,6 +160,13 @@
         </bc-form-item>
       </div>
 
+      <div class="config-form-item">
+        <bc-form-item label="Remark"
+                      prop="Remark">
+          <bc-input v-model="form.remark" type="text" :width="265"></bc-input>
+        </bc-form-item>
+      </div>
+
       <div class="title-default" style="margin-bottom: 15px;">Advanced Config
         <span @click="toggleAdvancedConfig"
               class="icon-for-advanced-config">
@@ -539,7 +546,8 @@
           jsonPath: '',
           pressureTraffic: 0,
           bigDataType: 0,
-          bigDataConfig: ''
+          bigDataConfig: '',
+          remark: ''
         },
         isSubmitting: false,
         filterableGroups: [],
@@ -793,7 +801,8 @@
           httpQueryParams: {},
           urls: [],
           orderRemark: form.orderRemark,
-          pressureTraffic: form.pressureTraffic
+          pressureTraffic: form.pressureTraffic,
+          remark: form.remark
         };
 
         // 接口类型选择决定读取以下字段

@@ -31,6 +31,11 @@
           <div>2. Once created can't modify the Consumer Group name</div>
         </div>
 
+        <bc-form-item label="Remark：" prop="remark">
+          <bc-input v-model="form.remark" placeholder="Please input Remark">
+          </bc-input>
+        </bc-form-item>
+
         <bc-form-item label="Alarm Group：" prop="alarmGroup">
           <bc-input v-model="form.alarmGroup" placeholder="Please input Alarm Group">
           </bc-input>
@@ -105,6 +110,7 @@
         form: {
           groupId: '',
           groupName: '',
+          remark: '',
           alarmGroup: null,
           alarmLevel: 1,
           alarmMsgLag: 10000,
@@ -181,6 +187,7 @@
           service: 'Engineering',
           department: 'Software',
           contacters: 'administration;',
+          remark: form.remark,
           alarmGroup: form.alarmGroup,
           alarmLevel: form.alarmLevel,
           alarmIsEnable: 1,

@@ -18,6 +18,7 @@ function start() {
 
     LOG_OPTS="-Dlogback.configurationFile=${MONITOR_HOME}/conf/logback.xml"
     RMQ_OPTS="-Drocketmq.client.maxTimeConsumeContinuously=1000"
+    NOTICE_OPTS="-Dnotice.configurationFile=${MONITOR_HOME}/conf/notice.properties"
     GC_FILE=${MONITOR_HOME}/logs/gc.log
     JSTAT_FILE=${MONITOR_HOME}/logs/jstat.log
 
@@ -33,7 +34,7 @@ function start() {
         mv ${JSTAT_FILE} ${MONITOR_HOME}/logs/jstat.old.log
     fi
 
-    java $LOG_OPTS $RMQ_OPTS $JVM_OPTS  -cp $CLASSPATH $MAINCLASS $MONITOR_CONFIG >> ${MONITOR_HOME}/logs/console_out.log 2>&1 &
+    java $LOG_OPTS $RMQ_OPTS $NOTICE_OPTS $JVM_OPTS  -cp $CLASSPATH $MAINCLASS $MONITOR_CONFIG >> ${MONITOR_HOME}/logs/console_out.log 2>&1 &
     sleep 2
     date >> logs/control.log
     PID="`pgrep -f ${MAINCLASS}`"

@@ -1,7 +1,9 @@
-package com.chopper.protocol;
+package com.xiaojukeji.protocol;
 
 import com.alibaba.fastjson.JSONObject;
-import com.chopper.tools.PropertiesTools;
+import com.xiaojukeji.tools.PropertiesTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -9,24 +11,20 @@ import java.util.List;
 import java.util.Arrays;
 
 public class ChopperConfiguration extends JSONObject {
-    private static final String CHOPPER = "notice.properties";
+    private static final Logger logger = LoggerFactory.getLogger(ChopperConfiguration.class);
 
     private static final HashMap<String, Object> CONF_STORE = new HashMap<>();
 
     static {
         if (CONF_STORE.size() == 0) {
-            Properties properties = PropertiesTools.getProperties(CHOPPER);
+            String fileName = System.getProperty("notice.configurationFile");
+            logger.info("load notice configuration file, fileName:{}", fileName);
+
+            Properties properties = PropertiesTools.getProperties(fileName);
             for (Entry<Object, Object> objectEntry : properties.entrySet()) {
                 CONF_STORE.put(objectEntry.getKey().toString().toLowerCase(), objectEntry.getValue());
             }
         }
-    }
-
-    /***
-     * 系统时区
-     */
-    public static String timeZone() {
-        return get("time.zone", "GMT+8");
     }
 
     /***

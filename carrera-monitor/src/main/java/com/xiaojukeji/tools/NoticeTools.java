@@ -1,16 +1,13 @@
-package com.chopper.tools;
+package com.xiaojukeji.tools;
 
-import com.chopper.protocol.ChopperConfiguration;
-import org.apache.commons.lang.StringUtils;
+import com.xiaojukeji.protocol.ChopperConfiguration;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.lang.Throwable;
 
 public class NoticeTools {
     private static final Logger logger = LoggerFactory.getLogger(NoticeTools.class);
@@ -22,9 +19,12 @@ public class NoticeTools {
     public static boolean sendEmail(String group, String context) {
         try {
             boolean warningOn = ChopperConfiguration.warningOn();
-            if (warningOn == false) {
+            if (! warningOn) {
+                logger.error("send email warning off");
                 return false;
             }
+
+            logger.info("send email start =========");
             HtmlEmail email = new HtmlEmail();
             email.setHostName(ChopperConfiguration.mailServerHost());
             email.setSmtpPort(ChopperConfiguration.mailServerPort());
@@ -43,8 +43,11 @@ public class NoticeTools {
             // send
             email.send();
 
+            logger.info("send email end =========");
             return true;
         } catch (EmailException e) {
+            logger.error("send email error, context:{}", context, e);
+        } catch (Throwable e) {
             logger.error("send email error, context:{}", context, e);
         }
         return false;

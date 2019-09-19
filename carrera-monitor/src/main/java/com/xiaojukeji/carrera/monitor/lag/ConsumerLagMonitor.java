@@ -12,7 +12,7 @@ import com.xiaojukeji.carrera.config.v4.GroupConfig;
 import com.xiaojukeji.carrera.config.v4.cproxy.UpstreamTopic;
 import com.xiaojukeji.carrera.dynamic.ParameterDynamicZookeeper;
 import com.xiaojukeji.carrera.utils.TimeUtils;
-import com.chopper.tools.NoticeTools;
+import com.xiaojukeji.tools.NoticeTools;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.rocketmq.client.consumer.PullResult;
 import org.apache.rocketmq.client.consumer.PullStatus;

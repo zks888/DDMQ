@@ -1,9 +1,8 @@
-package com.chopper.tools;
+package com.xiaojukeji.tools;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.FileReader;
 import java.util.Properties;
 
 public class PropertiesTools {
@@ -16,13 +15,9 @@ public class PropertiesTools {
      */
     public static Properties getProperties(String fileName) {
         Properties prop = new Properties();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null) {
-            classLoader = PropertiesTools.class.getClassLoader();
-        }
-        String sqlFile = classLoader.getResource(fileName).getFile();
         try {
-            prop.load(new BufferedReader(new InputStreamReader(new FileInputStream(sqlFile), "UTF-8")));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+            prop.load(bufferedReader);
         } catch (IOException e) {
             throw new IllegalArgumentException("解析文件 " + fileName + " 错误,请检查文件是否存在或者格式是否正确。");
         }

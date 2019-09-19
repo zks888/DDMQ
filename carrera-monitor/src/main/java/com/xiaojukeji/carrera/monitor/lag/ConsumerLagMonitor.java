@@ -219,8 +219,6 @@ public class ConsumerLagMonitor extends BaseConfigMonitor {
             LOGGER.info("[CONSUME_LAG_ALARM_MSG] alarm msg={}", alarmJson);
 
             NoticeTools.sendEmail("consumer.lag.monitor", alarmJson);
-        } else {
-            NoticeTools.sendEmail("consumer.lag.monitor", "一切正常");
         }
 
         LOGGER.debug("monitor end, group:{}, costtime:{}ms", groupConfig.getGroup(), TimeUtils.getElapseTime(startTs));

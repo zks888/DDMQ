@@ -20,11 +20,10 @@ public class NoticeTools {
         try {
             boolean warningOn = ChopperConfiguration.warningOn();
             if (! warningOn) {
-                logger.error("send email warning off");
+                logger.info("send email warning off");
                 return false;
             }
 
-            logger.info("send email start =========");
             HtmlEmail email = new HtmlEmail();
             email.setHostName(ChopperConfiguration.mailServerHost());
             email.setSmtpPort(ChopperConfiguration.mailServerPort());
@@ -43,10 +42,9 @@ public class NoticeTools {
             // send
             email.send();
 
-            logger.info("send email end =========");
             return true;
         } catch (EmailException e) {
-            logger.error("send email error, context:{}", context, e);
+            logger.debug("send email error, context:{}", context, e);
         } catch (Throwable e) {
             logger.error("send email error, context:{}", context, e);
         }

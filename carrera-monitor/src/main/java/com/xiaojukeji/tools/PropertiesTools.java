@@ -15,13 +15,13 @@ public class PropertiesTools {
         Properties prop = new Properties();
         FileInputStream stream = null;
         try {
-            stream = new FileInputStream(fileName);
+            stream = new FileInputStream(new File(fileName));
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("解析文件 " + fileName + " 错误,请检查文件是否存在。");
         }
         try {
-            InputStreamReader isr = new InputStreamReader(stream, "UTF-8");
-            BufferedReader bufferedReader = new BufferedReader(isr);
+            InputStreamReader reader = new InputStreamReader(stream, "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(reader);
             prop.load(bufferedReader);
         } catch (IOException e) {
             throw new IllegalArgumentException("解析文件 " + fileName + " 错误,请检查文件格式是否正确。");

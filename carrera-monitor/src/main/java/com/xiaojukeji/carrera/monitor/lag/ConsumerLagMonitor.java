@@ -138,7 +138,7 @@ public class ConsumerLagMonitor extends BaseConfigMonitor {
                 }
 
                 long committedLagThreshold = upstreamTopic.getCommittedLagThreshold();
-                long delayTimeThreshold = upstreamTopic.getDelayTimeThreshold();
+                long delayTimeThreshold = 1000 * upstreamTopic.getDelayTimeThreshold();
 
                 produceOffsetMap.clear();
                 consumeOffsetMap.clear();

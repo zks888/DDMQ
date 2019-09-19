@@ -1,8 +1,6 @@
 package com.xiaojukeji.tools;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Properties;
 
 public class PropertiesTools {
@@ -15,11 +13,18 @@ public class PropertiesTools {
      */
     public static Properties getProperties(String fileName) {
         Properties prop = new Properties();
+        FileInputStream stream = null;
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName));
+            stream = new FileInputStream(fileName);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("解析文件 " + fileName + " 错误,请检查文件是否存在。");
+        }
+        try {
+            InputStreamReader isr = new InputStreamReader(stream, "UTF-8");
+            BufferedReader bufferedReader = new BufferedReader(isr);
             prop.load(bufferedReader);
         } catch (IOException e) {
-            throw new IllegalArgumentException("解析文件 " + fileName + " 错误,请检查文件是否存在或者格式是否正确。");
+            throw new IllegalArgumentException("解析文件 " + fileName + " 错误,请检查文件格式是否正确。");
         }
         return prop;
     }

@@ -37,7 +37,7 @@ RUN curl http://mirrors.hust.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-
   && echo '2' > zookeeper/data/myid
 
 RUN mkdir -p \
- /root/logs/rocketmqlogs \
+ /root/logs/rocketmqlogs/otherdays \
  /root/chronos-storage/rocksdb \
  /root/chronos-storage/seektimestamp \
  /root/chronos-storage/rocksdb_backup \

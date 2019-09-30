@@ -4,4 +4,4 @@
 **/logs
 *.idea
 *.DS_Store
-*.jar
+*.war

@@ -13,7 +13,7 @@ class Consumer extends CI_Controller {
         $this->load->library('carrera/ThriftConsumer');
         $j = 0;
         for ($i=0;$i<200;$i++) {
-            $ret = $this->thriftconsumer->pull('cg_4', 'tp1');
+            $ret = $this->thriftconsumer->pull('cg_1', 'tp1');
             if ($ret['code'] > 0) {
                 var_dump($ret);
                 return;

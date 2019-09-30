@@ -4,3 +4,5 @@
 **/logs
 *.idea
 *.DS_Store
+carrera-test
+*.jar

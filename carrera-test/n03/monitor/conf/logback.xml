@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="true">
 
     <property name="LOG_LEVEL" value="INFO" />
-    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_PATH" value="/root/monitor/logs" />
     <property name="LOG_FILE_NAME" value="carrera" />
     <property name="LOG_MAX_HISTORY" value="30" />
 

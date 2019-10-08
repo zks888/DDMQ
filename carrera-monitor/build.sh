@@ -16,6 +16,7 @@ else
 fi
 
 OUTPATH=${WKDIR}/output
+rm -rf ${OUTPATH}
 mkdir -p ${OUTPATH}
 mkdir -p ${OUTPATH}/conf
 mkdir -p ${OUTPATH}/target

@@ -18,9 +18,9 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel unzip gettext nmap-ncat openssl wget telnet\
   && yum clean all -y
 
-RUN curl http://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.24/bin/apache-tomcat-9.0.24.zip -o tomcat.zip \
+RUN curl http://mirror.bit.edu.cn/apache/tomcat/tomcat-9/v9.0.26/bin/apache-tomcat-9.0.26.zip -o tomcat.zip \
   && unzip tomcat.zip \
-  && mv apache-tomcat-9.0.24 tomcat \
+  && mv apache-tomcat-9.0.26 tomcat \
   && rm tomcat.zip \
   && chmod +x tomcat/bin/*.sh
 

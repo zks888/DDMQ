@@ -11,8 +11,21 @@ function start() {
     BASEDIR=$(dirname "$0")
     cd "${BASEDIR}"
     MONITOR_HOME=`pwd`
-    mkdir -p logs
+    mkdir -p logs/old
+
     MONITOR_CONFIG="${MONITOR_HOME}/conf/monitor.yaml"
+
+    # backup log
+    LOG_NAMES=(carrera.log carrera-broker.log carrera-error.log carrera-inspection.log carrera-lag.log gc.log jstat.log)
+    LOG_SUFFIX=$(date +%Y%m%d-%H%M%S)
+    for var in ${LOG_NAMES[@]};
+    do
+        if [ -f "${MONITOR_HOME}/logs/${var}" ]; then
+            mv "${MONITOR_HOME}/logs/${var}" "${MONITOR_HOME}/logs/old/${var}.${LOG_SUFFIX}"
+        fi
+    done
+
+    # set config
     CLASSPATH="${MONITOR_HOME}/target/carrera-monitor-${CARRERA_VERSION}-jar-with-dependencies.jar":"${MONITOR_HOME}/conf":$CLASSPATH
     date >> ${MONITOR_HOME}/logs/console_out.log
 

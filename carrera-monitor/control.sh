@@ -72,7 +72,7 @@ function stop() {
     done
     if [ `pgrep -f ${MAINCLASS}` ]; then
         echo "stop timeout"
-        echo "Stop Proxy Failed" >> control.log
+        echo "Stop Monitor Failed" >> control.log
         exit 1
     fi
     echo "KILLED" >> control.log

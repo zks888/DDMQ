@@ -16,7 +16,7 @@ class Producer extends CI_Controller {
                 'b' => 'World',
                 'i' => $i,
             ]);
-            $ret = $this->thriftproducer->send('tp2', $data, ThriftProducer::PARTITION_RAND, 0);
+            $ret = $this->thriftproducer->send('tp3', $data, ThriftProducer::PARTITION_RAND, $i);
             var_dump($ret);
         }
     }

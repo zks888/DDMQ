@@ -12,8 +12,8 @@ class Consumer extends CI_Controller {
     public function consume() {
         $this->load->library('carrera/ThriftConsumer');
         $j = 0;
-        for ($i=0;$i<200;$i++) {
-            $ret = $this->thriftconsumer->pull('cg_1', 'tp1');
+        for ($i=0;$i<20000;$i++) {
+            $ret = $this->thriftconsumer->pull('cg_1', 'tp2');
             if ($ret['code'] > 0) {
                 var_dump($ret);
                 return;
@@ -30,14 +30,15 @@ class Consumer extends CI_Controller {
                 }
             }
             $ret = $this->thriftconsumer->submit($context, $aSuccessOffsets, $aFailOffsets);
-            //var_dump($ret);
+            var_dump($ret);
             $j++;
             echo $j;
         }
     }
 
     private function callback($value) {
-        echo "msg: ".$value."\r\n";
-        return true;//(mt_rand(1,100) > 50);
+        sleep(1);
+        file_put_contents(APPPATH . 'logs/11.log', $value."\r\n", FILE_APPEND);
+        return true;
     }
 }

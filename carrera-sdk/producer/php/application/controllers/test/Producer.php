@@ -10,13 +10,13 @@ class Producer extends CI_Controller {
 
     public function test() {
         $this->load->library('carrera/ThriftProducer');
-        for ($i=0;$i<1000;$i++) {
+        for ($i=0;$i<100;$i++) {
             $data = json_encode([
                 'a' => 'Hello',
                 'b' => 'World',
                 'i' => $i,
             ]);
-            $ret = $this->thriftproducer->send('tp1', $data, ThriftProducer::PARTITION_RAND, 0);
+            $ret = $this->thriftproducer->send('tp2', $data, ThriftProducer::PARTITION_RAND, 0);
             var_dump($ret);
         }
     }

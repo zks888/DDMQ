@@ -4,7 +4,7 @@ require_once __DIR__ . '/thriftconf.php';
 use didi\carrera\consumer\proxy\ConsumerServiceClient;
 use didi\carrera\consumer\proxy\PullRequest;
 use didi\carrera\consumer\proxy\AckResult;
-use didi\carrera\consumer\proxy\ConsumeStatsRequest;
+use didi\carrera\consumer\proxy\PullResponse;
 use didi\carrera\consumer\proxy\FetchRequest;
 use didi\carrera\consumer\proxy\ConsumeResult;
 use didi\carrera\consumer\proxy\PullException;
@@ -34,6 +34,7 @@ class Carrera
     // 错误码
     const OK = 0;
     const CACHE_OK = 1;
+    const EMPTY_RET = 2;
     const DOWNGRADE = 100;
     const CLIENT_EXCEPTION = 101;
     const MISSING_PARAMETERS = 102;
@@ -82,7 +83,7 @@ class Carrera
     {
         $ci = get_instance();
         $ci->load->config('config_carrera_cluster', true);
-        $aConfig = $ci->config->item('carrera', 'config_carrera_cluster');
+        $aConfig = $ci->config->item('consumer', 'config_carrera_cluster');
         $this->proxyList = $aConfig['CARRERA_PROXY_LIST'];
         $this->proxyTimeout = $aConfig['CARRERA_PROXY_TIMEOUT'];
         $this->clientTimeout = $aConfig['CARRERA_CLIENT_TIMEOUT'];
@@ -145,7 +146,7 @@ class Carrera
             $status = 'failure';
         }
         $used = (microtime(true) - $startTime) * 1000;
-        $addr = $ret['ip'];
+        $addr = isset($ret['ip']) ? $ret['ip'] : '';
 
         $logInfo = array(
             'opera_stat_key' => 'carrera_trace',
@@ -432,20 +433,28 @@ class Carrera
 
                 switch ($cmd) {
                     case 'pull':
-                        if ($response && $response->context->qid) {
-                            $ret = [
-                                'context' => $response->context,
-                                'messages' => $response->messages
-                            ];
-                            $result = array(
-                                'ret' => $ret,
-                                'code' => self::OK,
-                                'msg' => 'success',
-                                'ip' => $proxyAddr
-                            );
-                            return $result;
-                        } else {
-                            sleep(self::RETRY_INTERVAL);
+                        if ($response instanceof PullResponse) {
+                            if ($response->context->qid) {
+                                $ret = [
+                                    'context' => $response->context,
+                                    'messages' => $response->messages
+                                ];
+                                $result = array(
+                                    'ret' => $ret,
+                                    'code' => self::OK,
+                                    'msg' => 'success',
+                                    'ip' => $proxyAddr
+                                );
+                                return $result;
+                            } elseif ($retryCount > 1) {
+                                $result = array(
+                                    'ret' => null,
+                                    'code' => self::EMPTY_RET,
+                                    'msg' => 'empty',
+                                    'ip' => $proxyAddr
+                                );
+                                return $result;
+                            }
                         }
                         break;
                     default:
@@ -465,6 +474,7 @@ class Carrera
                     'msg' => 'failure',
                     'ip' => $proxyAddr
                 );
+                sleep(self::RETRY_INTERVAL);
             } catch (PullException $e) {
                 if (isset($transport)) {
                     $transport->close();

@@ -83,7 +83,7 @@ class Carrera
     {
         $ci = get_instance();
         $ci->load->config('config_carrera_cluster', true);
-        $aConfig = $ci->config->item('consumer', 'config_carrera_cluster');
+        $aConfig = $ci->config->item('carrera', 'config_carrera_cluster');
         $this->proxyList = $aConfig['CARRERA_PROXY_LIST'];
         $this->proxyTimeout = $aConfig['CARRERA_PROXY_TIMEOUT'];
         $this->clientTimeout = $aConfig['CARRERA_CLIENT_TIMEOUT'];
@@ -123,28 +123,34 @@ class Carrera
         ));
 
         $startTime = microtime(true);
-        try {
-            $this->proxyLocked = true;
-            $ret = $this->pullWithThrift('pull', $request);
-            switch ($ret['code']) {
-                case self::OK:
-                    $status = 'success';
-                    break;
-                case self::CACHE_OK:
-                    $status = 'cache_ok';
-                    break;
-                default:
-                    $status = 'failure';
-                    break;
+
+        $retryCount = 0;
+        do {
+            try {
+                $this->proxyLocked = true;
+                $ret = $this->pullWithThrift('pull', $request);
+                switch ($ret['code']) {
+                    case self::OK:
+                        $status = 'success';
+                        break;
+                    case self::CACHE_OK:
+                        $status = 'cache_ok';
+                        break;
+                    default:
+                        $status = 'failure';
+                        break;
+                }
+            } catch (\Exception $e) {
+                $this->proxyLocked = false;
+                $ret = array(
+                    'code' => self::CLIENT_EXCEPTION,
+                    'msg' => $e->getMessage(),
+                );
+                $status = 'failure';
+                sleep(self::RETRY_INTERVAL);
             }
-        } catch (\Exception $e) {
-            $this->proxyLocked = false;
-            $ret = array(
-                'code' => self::CLIENT_EXCEPTION,
-                'msg' => $e->getMessage(),
-            );
-            $status = 'failure';
-        }
+        } while ($retryCount++ < $this->clientRetry);
+
         $used = (microtime(true) - $startTime) * 1000;
         $addr = isset($ret['ip']) ? $ret['ip'] : '';
 

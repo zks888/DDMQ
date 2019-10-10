@@ -41,4 +41,4 @@ docker run -td --rm --name ddmqn03 --network ddmq-net --ip 172.18.0.5 -p 192.168
 
 # run rocketmq-console-ng container
 echo 'start rocketmq-console-ng container.'
-docker run -e "JAVA_OPTS=-Drocketmq.namesrv.addr=172.18.0.3:9876;172.18.0.4:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false" --name rocketmq --network ddmq-net --ip 172.18.0.8 -p 192.168.11.247:8088:8080 -td styletang/rocketmq-console-ng:latest
+docker run -e "JAVA_OPTS=-Drocketmq.namesrv.addr=172.18.0.3:9876;172.18.0.4:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false" -td --rm --name rocketmq --network ddmq-net --ip 172.18.0.8 -p 192.168.11.247:8088:8080 styletang/rocketmq-console-ng:latest

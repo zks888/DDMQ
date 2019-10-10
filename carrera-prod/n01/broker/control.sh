@@ -3,8 +3,6 @@ MAIN_CLASS=rocketmq.broker.BrokerStartup
 LOG_HOME="${HOME}"/logs/rocketmqlogs
 
 mkdir -p ${LOG_HOME}
-mkdir -p "${HOME}"/rocketmq/broker-a/store
-mkdir -p "${HOME}"/rocketmq/broker-b-s/store
 
 function get_pid() {
     PID=$(ps ax | grep -i ${MAIN_CLASS} |grep java | grep -v grep | awk '{print $1}')

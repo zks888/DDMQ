@@ -37,7 +37,7 @@ class Consumer extends CI_Controller {
     }
 
     private function callback($value) {
-        sleep(1);
+        //sleep(1);
         file_put_contents(APPPATH . 'logs/11.log', $value."\r\n", FILE_APPEND);
         return true;
     }

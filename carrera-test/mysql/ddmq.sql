@@ -1,10 +1,26 @@
---
--- Table structure for table `cluster`
---
+/*
+ Navicat Premium Data Transfer
 
+ Source Server         : 本地环境
+ Source Server Type    : MySQL
+ Source Server Version : 50725
+ Source Host           : localhost:3306
+ Source Schema         : carrera_open_source
+
+ Target Server Type    : MySQL
+ Target Server Version : 50725
+ File Encoding         : 65001
+
+ Date: 10/10/2019 17:41:37
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for cluster
+-- ----------------------------
 DROP TABLE IF EXISTS `cluster`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cluster` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
@@ -18,31 +34,24 @@ CREATE TABLE `cluster` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_name` (`name`,`is_delete`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='集群信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `cluster`
---
+-- ----------------------------
+-- Records of cluster
+-- ----------------------------
+BEGIN;
+INSERT INTO `cluster` VALUES (1, 'ddmq', 'open source', 1, 'default', 'default cluster', 0, '2017-03-15 03:47:48', '2018-12-28 20:34:03');
+COMMIT;
 
-LOCK TABLES `cluster` WRITE;
-/*!40000 ALTER TABLE `cluster` DISABLE KEYS */;
-INSERT INTO `cluster` VALUES (1,'ddmq','open source',1,'default','default cluster',0,'2017-03-15 03:47:48','2018-12-28 12:34:03');
-/*!40000 ALTER TABLE `cluster` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `cluster_mqserver_relation`
---
-
+-- ----------------------------
+-- Table structure for cluster_mqserver_relation
+-- ----------------------------
 DROP TABLE IF EXISTS `cluster_mqserver_relation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cluster_mqserver_relation` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `cluster_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '集群id',
-  `cluster_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
+  `cluster_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
   `mq_server_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'mqserver id',
-  `mq_server_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'mqserver名称',
+  `mq_server_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'mqserver名称',
   `proxy_conf` varchar(4096) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群配置',
   `type` tinyint(3) NOT NULL DEFAULT '0' COMMENT '集群和mqserver关联类型，0:pproxy 1:cproxy',
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除 0:未删除 1:删除',
@@ -50,26 +59,19 @@ CREATE TABLE `cluster_mqserver_relation` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='cluster和mq关系表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `cluster_mqserver_relation`
---
+-- ----------------------------
+-- Records of cluster_mqserver_relation
+-- ----------------------------
+BEGIN;
+INSERT INTO `cluster_mqserver_relation` VALUES (1, 1, 'ddmq', 1, 'R_default', '{\"groupPrefix\":\"carrera_rocketmq_consumer_\",\"pullBatchSize\":32,\"pollNameServerInterval\":2000,\"consumeMessageBatchMaxSize\":1,\"persistConsumerOffsetInterval\":5000,\"pullThresholdForQueue\":1000,\"consumeFromWhere\":\"CONSUME_FROM_LAST_OFFSET\",\"heartbeatBrokerInterval\":2000,\"consumeConcurrentlyMaxSpan\":2000}', 1, 0, '2018-07-20 11:25:58', '2018-12-28 20:36:28');
+INSERT INTO `cluster_mqserver_relation` VALUES (2, 1, 'ddmq', 1, 'R_default', '{\"useKafka\":false,\"warmUpConnection\":true,\"rocketmqConfigurationMap\":{\"R_default\":{\"groupPrefix\":\"carrera_rocketmq_producer_\",\"compressMsgBodyOverHowmuch\":4096,\"pollNameServerInterval\":2000,\"namesrvAddrs\":[\"172.18.0.3:9876\",\"172.18.0.4:9876\"],\"persistConsumerOffsetInterval\":5000,\"heartbeatBrokerInterval\":10000,\"clientCallbackExecutorThreads\":4,\"retryAnotherBrokerWhenNotStoreOK\":false,\"retryTimesWhenSendFailed\":1,\"sendMsgTimeout\":3000,\"maxMessageSize\":2097152}},\"warmUpFetchTopicRouteInfo\":true,\"rateLimit\":{\"staticMode\":false},\"thriftServer\":{\"workerQueueSize\":20000,\"backlog\":50,\"timeoutCheckerThreads\":3,\"port\":9613,\"acceptQueueSizePerThread\":100,\"selectorThreads\":8,\"maxReadBufferBytes\":5000000,\"clientTimeout\":0,\"workerThreads\":0},\"rocketmqProducers\":3,\"useRocketmq\":true,\"retryDelays\":[200,500,1000,5000,10000],\"autoBatch\":{\"maxBathBytes\":4096,\"encodeWorkerThreads\":4,\"maxBatchMessagesNumber\":32,\"doBatchThresholdBytes\":1024,\"maxContinuouslyRunningMills\":50,\"batchWaitMills\":5,\"maxEncodeWorkerForEachBroker\":1},\"kafkaProducers\":3,\"delay\":{\"chronosInnerTopicPrefix\":\"R_test_chronos_inner_\",\"innerTopicNum\":1},\"paramLength\":{\"tagLenMax\":255,\"failWhenIllegal\":true,\"keyLenMax\":255},\"tpsWarningRatio\":0.8,\"useAutoBatch\":true,\"maxTps\":3000,\"useRequestLimiter\":true,\"defaultTopicInfoConf\":{\"topics\":[]}}', 0, 0, '2018-07-20 11:27:03', '2019-10-09 15:49:50');
+COMMIT;
 
-LOCK TABLES `cluster_mqserver_relation` WRITE;
-/*!40000 ALTER TABLE `cluster_mqserver_relation` DISABLE KEYS */;
-INSERT INTO `cluster_mqserver_relation` VALUES (1,1,'ddmq',1,'R_default','{\"groupPrefix\":\"carrera_rocketmq_consumer_\",\"pullBatchSize\":32,\"pollNameServerInterval\":2000,\"consumeMessageBatchMaxSize\":1,\"persistConsumerOffsetInterval\":5000,\"pullThresholdForQueue\":1000,\"consumeFromWhere\":\"CONSUME_FROM_LAST_OFFSET\",\"heartbeatBrokerInterval\":2000,\"consumeConcurrentlyMaxSpan\":2000}',1,0,'2018-07-20 11:25:58','2018-12-28 12:36:28');
-INSERT INTO `cluster_mqserver_relation` VALUES (2,1,'ddmq',1,'R_default','{\"useKafka\":false,\"warmUpConnection\":true,\"rocketmqConfigurationMap\":{\"R_default\":{\"groupPrefix\":\"carrera_rocketmq_producer_\",\"compressMsgBodyOverHowmuch\":4096,\"pollNameServerInterval\":2000,\"namesrvAddrs\":[\"172.18.0.3:9876\",\"172.18.0.4:9876\"],\"persistConsumerOffsetInterval\":5000,\"heartbeatBrokerInterval\":10000,\"clientCallbackExecutorThreads\":4,\"retryAnotherBrokerWhenNotStoreOK\":false,\"retryTimesWhenSendFailed\":1,\"sendMsgTimeout\":3000,\"maxMessageSize\":2097152}},\"warmUpFetchTopicRouteInfo\":true,\"rateLimit\":{\"staticMode\":false},\"thriftServer\":{\"workerQueueSize\":20000,\"backlog\":50,\"timeoutCheckerThreads\":3,\"port\":9613,\"acceptQueueSizePerThread\":100,\"selectorThreads\":8,\"maxReadBufferBytes\":5000000,\"clientTimeout\":0,\"workerThreads\":0},\"rocketmqProducers\":3,\"useRocketmq\":true,\"retryDelays\":[200,500,1000,5000,10000],\"autoBatch\":{\"maxBathBytes\":4096,\"encodeWorkerThreads\":4,\"maxBatchMessagesNumber\":32,\"doBatchThresholdBytes\":1024,\"maxContinuouslyRunningMills\":50,\"batchWaitMills\":5,\"maxEncodeWorkerForEachBroker\":1},\"kafkaProducers\":3,\"delay\":{\"chronosInnerTopicPrefix\":\"R_test_chronos_inner_\",\"innerTopicNum\":1},\"paramLength\":{\"tagLenMax\":255,\"failWhenIllegal\":true,\"keyLenMax\":255},\"tpsWarningRatio\":0.8,\"useAutoBatch\":true,\"maxTps\":3000,\"useRequestLimiter\":true,\"defaultTopicInfoConf\":{\"topics\":[]}}',0,0,'2018-07-20 11:27:03','2018-12-28 12:36:39');
-/*!40000 ALTER TABLE `cluster_mqserver_relation` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `consume_group`
---
-
+-- ----------------------------
+-- Table structure for consume_group
+-- ----------------------------
 DROP TABLE IF EXISTS `consume_group`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `consume_group` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `group_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'groupname',
@@ -92,31 +94,31 @@ CREATE TABLE `consume_group` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_groupname` (`group_name`,`is_delete`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费组表';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费组表';
 
---
--- Dumping data for table `consume_group`
---
+-- ----------------------------
+-- Records of consume_group
+-- ----------------------------
+BEGIN;
+INSERT INTO `consume_group` VALUES (8, 'cg_chronos_inner_0_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 1000000, 2592000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', '延迟消息专用', 0, '2019-10-10 10:07:06', '2019-10-10 10:30:15');
+INSERT INTO `consume_group` VALUES (9, 'cg_local_test_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'administration', 1, '2019-10-10 10:26:17', '2019-10-10 10:27:02');
+INSERT INTO `consume_group` VALUES (10, 'cg_local_test_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'administration', 1, '2019-10-10 10:26:26', '2019-10-10 10:27:02');
+INSERT INTO `consume_group` VALUES (11, 'cg_local_test_0_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_0', 0, '2019-10-10 10:27:29', '2019-10-10 10:27:29');
+INSERT INTO `consume_group` VALUES (12, 'cg_local_test_0_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_1', 0, '2019-10-10 10:27:48', '2019-10-10 10:27:47');
+INSERT INTO `consume_group` VALUES (13, 'cg_local_test_1_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_1_0', 0, '2019-10-10 10:28:12', '2019-10-10 10:28:11');
+INSERT INTO `consume_group` VALUES (14, 'cg_local_test_1_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_1_1', 0, '2019-10-10 10:28:35', '2019-10-10 10:28:34');
+COMMIT;
 
-LOCK TABLES `consume_group` WRITE;
-/*!40000 ALTER TABLE `consume_group` DISABLE KEYS */;
-/*!40000 ALTER TABLE `consume_group` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `consume_subscription`
---
-
+-- ----------------------------
+-- Table structure for consume_subscription
+-- ----------------------------
 DROP TABLE IF EXISTS `consume_subscription`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `consume_subscription` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `group_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '组id',
   `group_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '组名称',
   `topic_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'topic主键id',
-  `topic_name` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'topic名称',
+  `topic_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'topic名称',
   `cluster_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '集群id',
   `cluster_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
   `mq_server_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'mqserver id',
@@ -160,25 +162,20 @@ CREATE TABLE `consume_subscription` (
   PRIMARY KEY (`id`),
   KEY `idx_groupid_topicid` (`is_delete`,`group_id`,`topic_id`,`state`),
   KEY `idx_clu_group_consumetype` (`is_delete`,`cluster_id`,`group_id`,`consume_type`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费订阅关系表';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费订阅关系表';
 
---
--- Dumping data for table `consume_subscription`
---
+-- ----------------------------
+-- Records of consume_subscription
+-- ----------------------------
+BEGIN;
+INSERT INTO `consume_subscription` VALUES (11, 11, 'cg_local_test_0_0', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 1000, 3, '[50,100,150]', 1, 1, 1, NULL, '{}', 1, '', 1, 0, '', '[]', 0, '', '{}', 0, '', 0, '[\"Async\",\"PullServer\"]', '{\"appendContext\":null,\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_0', 0, '2019-10-10 10:31:40', '2019-10-10 10:55:42');
+INSERT INTO `consume_subscription` VALUES (12, 12, 'cg_local_test_0_1', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 1000, 3, '[50000,100000,150000]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 2, 'ssdddsdsdsdddssd', 128, '[\"Async\",\"Json\",\"FormParams2\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_1', 0, '2019-10-10 10:32:48', '2019-10-10 10:55:42');
+COMMIT;
 
-LOCK TABLES `consume_subscription` WRITE;
-/*!40000 ALTER TABLE `consume_subscription` DISABLE KEYS */;
-/*!40000 ALTER TABLE `consume_subscription` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `idc`
---
-
+-- ----------------------------
+-- Table structure for idc
+-- ----------------------------
 DROP TABLE IF EXISTS `idc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `idc` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
@@ -189,25 +186,18 @@ CREATE TABLE `idc` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_name` (`name`,`is_delete`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='机房信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `idc`
---
+-- ----------------------------
+-- Records of idc
+-- ----------------------------
+BEGIN;
+INSERT INTO `idc` VALUES (1, 'default', '', 0, '2018-06-22 11:08:18', '2018-12-28 17:40:19');
+COMMIT;
 
-LOCK TABLES `idc` WRITE;
-/*!40000 ALTER TABLE `idc` DISABLE KEYS */;
-INSERT INTO `idc` VALUES (1,'default','',0,'2018-06-22 11:08:18','2018-12-28 09:40:19');
-/*!40000 ALTER TABLE `idc` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `mq_server`
---
-
+-- ----------------------------
+-- Table structure for mq_server
+-- ----------------------------
 DROP TABLE IF EXISTS `mq_server`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mq_server` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'mq 集群名称',
@@ -221,25 +211,18 @@ CREATE TABLE `mq_server` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='mq 集群信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `mq_server`
---
+-- ----------------------------
+-- Records of mq_server
+-- ----------------------------
+BEGIN;
+INSERT INTO `mq_server` VALUES (1, 'R_default', 'rocketmq', '172.18.0.3:9876;172.18.0.4:9876', 0, 1, 'default', 0, '2017-04-17 14:56:17', '2018-12-28 20:37:38');
+COMMIT;
 
-LOCK TABLES `mq_server` WRITE;
-/*!40000 ALTER TABLE `mq_server` DISABLE KEYS */;
-INSERT INTO `mq_server` VALUES (1,'R_default','rocketmq','172.18.0.3:9876;172.18.0.4:9876',0,1,'default',0,'2017-04-17 14:56:17','2018-12-28 12:37:38');
-/*!40000 ALTER TABLE `mq_server` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `node`
---
-
+-- ----------------------------
+-- Table structure for node
+-- ----------------------------
 DROP TABLE IF EXISTS `node`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `node` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `cluster_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '集群id',
@@ -252,27 +235,22 @@ CREATE TABLE `node` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   KEY `idx_clusterid_host` (`is_delete`,`cluster_id`,`host`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='broker 信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='broker 信息';
 
---
--- Dumping data for table `node`
---
+-- ----------------------------
+-- Records of node
+-- ----------------------------
+BEGIN;
+INSERT INTO `node` VALUES (1, 1, 1, 0, '172.18.0.3', 3, 0, '2018-12-28 11:29:01', '2018-12-28 20:39:21');
+INSERT INTO `node` VALUES (2, 1, 1, 0, '172.18.0.3', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
+INSERT INTO `node` VALUES (3, 1, 1, 0, '172.18.0.4', 3, 0, '2018-12-28 11:29:01', '2018-12-28 20:39:21');
+INSERT INTO `node` VALUES (4, 1, 1, 0, '172.18.0.4', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
+COMMIT;
 
-LOCK TABLES `node` WRITE;
-/*!40000 ALTER TABLE `node` DISABLE KEYS */;
-INSERT INTO `node` VALUES (1,1,1,0,'172.18.0.3',3,0,'2018-12-28 11:29:01','2018-12-28 12:39:21'),(2,1,1,0,'172.18.0.3',4,0,'2018-12-28 11:29:05','2018-12-28 12:39:21');
-INSERT INTO `node` VALUES (3,1,1,0,'172.18.0.4',3,0,'2018-12-28 11:29:01','2018-12-28 12:39:21'),(4,1,1,0,'172.18.0.4',4,0,'2018-12-28 11:29:05','2018-12-28 12:39:21');
-/*!40000 ALTER TABLE `node` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `topic`
---
-
+-- ----------------------------
+-- Table structure for topic
+-- ----------------------------
 DROP TABLE IF EXISTS `topic`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `topic` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `topic_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'topic名称',
@@ -296,33 +274,30 @@ CREATE TABLE `topic` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_topicname` (`topic_name`,`is_delete`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic信息表';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic信息表';
 
---
--- Dumping data for table `topic`
---
+-- ----------------------------
+-- Records of topic
+-- ----------------------------
+BEGIN;
+INSERT INTO `topic` VALUES (5, 'inspection', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'inspection', '{}', 0, '2019-10-09 11:04:24', '2019-10-09 11:04:23');
+INSERT INTO `topic` VALUES (9, 'chronos_inner_0', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'chronos_inner_0', '{}', 0, '2019-10-10 10:06:37', '2019-10-10 10:06:37');
+INSERT INTO `topic` VALUES (12, 'local_test_0', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'local_test_0', '{}', 0, '2019-10-10 10:25:55', '2019-10-10 10:25:55');
+INSERT INTO `topic` VALUES (13, 'local_test_1', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'local_test_1', '{}', 0, '2019-10-10 10:26:06', '2019-10-10 10:26:05');
+COMMIT;
 
-LOCK TABLES `topic` WRITE;
-/*!40000 ALTER TABLE `topic` DISABLE KEYS */;
-/*!40000 ALTER TABLE `topic` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `topic_conf`
---
-
+-- ----------------------------
+-- Table structure for topic_conf
+-- ----------------------------
 DROP TABLE IF EXISTS `topic_conf`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `topic_conf` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `topic_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'topic 主键id',
   `topic_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'topic名称',
   `cluster_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '集群id',
-  `cluster_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
+  `cluster_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '集群名称',
   `mq_server_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'mqserver id',
-  `mq_server_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'mqserver名称',
+  `mq_server_name` char(100) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'mqserver名称',
   `server_idc_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'server对应的机房id',
   `server_idc_name` varchar(256) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'server对应的机房名称',
   `client_idc` varchar(1024) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT 'clientidc对应的id和value',
@@ -337,14 +312,16 @@ CREATE TABLE `topic_conf` (
   PRIMARY KEY (`id`),
   KEY `idx_topicid_clusterid_mqserverid` (`is_delete`,`topic_id`,`cluster_id`,`mq_server_id`),
   KEY `idx_topicname` (`is_delete`,`topic_name`,`cluster_name`,`mq_server_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic集群配置表';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic集群配置表';
 
---
--- Dumping data for table `topic_conf`
---
+-- ----------------------------
+-- Records of topic_conf
+-- ----------------------------
+BEGIN;
+INSERT INTO `topic_conf` VALUES (5, 5, 'inspection', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-09 11:04:24', '2019-10-09 11:04:23');
+INSERT INTO `topic_conf` VALUES (9, 9, 'chronos_inner_0', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-10 10:06:37', '2019-10-10 10:06:38');
+INSERT INTO `topic_conf` VALUES (12, 12, 'local_test_0', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-10 10:25:55', '2019-10-10 10:25:55');
+INSERT INTO `topic_conf` VALUES (13, 13, 'local_test_1', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-10 10:26:06', '2019-10-10 10:26:05');
+COMMIT;
 
-LOCK TABLES `topic_conf` WRITE;
-/*!40000 ALTER TABLE `topic_conf` DISABLE KEYS */;
-/*!40000 ALTER TABLE `topic_conf` ENABLE KEYS */;
-UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS = 1;

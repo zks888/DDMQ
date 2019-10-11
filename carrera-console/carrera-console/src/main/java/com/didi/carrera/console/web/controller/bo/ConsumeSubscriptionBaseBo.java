@@ -75,10 +75,10 @@ public class ConsumeSubscriptionBaseBo extends BaseOrderBo {
     @Range(min = 1, max = 2, message = "是否启用lowlevel只能是1禁用 2启用")
     private Byte apiType;
 
-    private Integer consumeTimeout = 1000;
+    private Integer consumeTimeout = 5000;
 
     private Integer errorRetryTimes = 3;
-    private List<Integer> retryIntervals = Lists.newArrayList(50, 100, 150);
+    private List<Integer> retryIntervals = Lists.newArrayList(50000, 100000, 150000);
 
     @Range(min = 1, max = 3, message = "消息类型 1Json 2Text 3Bytes")
     private Byte msgType = ConsumeSubscriptionMsgType.BINARY.getIndex();

@@ -2,11 +2,9 @@ package com.didi.carrera.console.service.impl;
 
 import com.didi.carrera.console.common.util.CacheLockUtils;
 import com.didi.carrera.console.common.util.HostUtils;
+import com.didi.carrera.console.common.util.RandomUtils;
 import com.didi.carrera.console.dao.DaoUtil;
-import com.didi.carrera.console.dao.dict.ConsumeSubscriptionMsgPushType;
-import com.didi.carrera.console.dao.dict.IsDelete;
-import com.didi.carrera.console.dao.dict.IsEnable;
-import com.didi.carrera.console.dao.dict.NodeType;
+import com.didi.carrera.console.dao.dict.*;
 import com.didi.carrera.console.dao.mapper.ConsumeSubscriptionMapper;
 import com.didi.carrera.console.dao.mapper.custom.ConsumeSubscriptionCustomMapper;
 import com.didi.carrera.console.dao.model.Cluster;
@@ -59,7 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Service("didiConsumeSubscriptionServiceImpl")
 @EnableTransactionManagement
@@ -188,7 +185,12 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
 
         if (CollectionUtils.isNotEmpty(nodeList)) {
             Set<String> hostSet = nodeList.stream().map(n -> HostUtils.getIpPortFromHost(n.getHost(), ZKV4ConfigServiceImpl.DEFAULT_CPROXY_PORT)).collect(Collectors.toSet());
-            config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).addAll(hostSet);
+            if (sub.getConsumeType() == ConsumeSubscriptionConsumeType.HTTP.getIndex()) {
+                String e = RandomUtils.getRandomElement(hostSet);
+                config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).add(e);
+            } else {
+                config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).addAll(hostSet);
+            }
         }
     }
 

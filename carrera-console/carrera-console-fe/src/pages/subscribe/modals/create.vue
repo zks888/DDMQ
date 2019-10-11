@@ -136,19 +136,19 @@
       <div v-show="isShowAlarmConfig">
         <div class="config-form-item">
           <bc-form-item label="Alarm Type" prop="alarmType">
-            <bc-input v-model="form.alarmType" type="number" :width="265"></bc-input>
+            <bc-input disabled v-model="form.alarmType" type="number" :width="265"></bc-input>
           </bc-form-item>
           <bc-form-item label="Alarm Level" prop="alarmLevel">
-            <bc-input v-model="form.alarmLevel" type="number" :width="265"></bc-input>
+            <bc-input disabled v-model="form.alarmLevel" type="number" :width="265"></bc-input>
           </bc-form-item>
         </div>
 
         <div class="config-form-item">
           <bc-form-item label="Alarm Msg Lag" prop="alarmMsgLag">
-              <bc-input v-model="form.alarmMsgLag" type="text" :width="265"></bc-input>
+              <bc-input disabled v-model="form.alarmMsgLag" type="text" :width="265"></bc-input>
           </bc-form-item>
           <bc-form-item label="Alarm Delay Time" prop="alarmDelayTime">
-              <bc-input v-model="form.alarmDelayTime" type="number" :width="265"></bc-input>
+              <bc-input disabled v-model="form.alarmDelayTime" type="number" :width="265"></bc-input>
           </bc-form-item>
         </div>
       </div>
@@ -451,9 +451,9 @@
           alarmMsgLag: '',
           alarmDelayTime: '',
           apiType: 1,
-          consumeTimeout: 1000,
+          consumeTimeout: 10000,
           errorRetryTimes: 3,
-          retryIntervals: '50;100;150',
+          retryIntervals: '50000;100000;150000',
           msgType: 1,
           enableGroovy: 1,
           enableTransit: 1,

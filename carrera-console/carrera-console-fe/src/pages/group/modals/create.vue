@@ -113,8 +113,8 @@
           remark: '',
           alarmGroup: null,
           alarmLevel: 1,
-          alarmMsgLag: 10000,
-          alarmDelayTime: 300000
+          alarmMsgLag: 100000,
+          alarmDelayTime: 2592000
         },
         formRule: createGroup,
 

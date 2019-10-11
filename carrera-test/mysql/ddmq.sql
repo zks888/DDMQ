@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地环境
+ Source Server         : 192.168.11.200
  Source Server Type    : MySQL
- Source Server Version : 50725
- Source Host           : localhost:3306
+ Source Server Version : 50643
+ Source Host           : 192.168.11.200:3306
  Source Schema         : carrera_open_source
 
  Target Server Type    : MySQL
- Target Server Version : 50725
+ Target Server Version : 50643
  File Encoding         : 65001
 
- Date: 10/10/2019 17:41:37
+ Date: 11/10/2019 16:13:24
 */
 
 SET NAMES utf8mb4;
@@ -65,7 +65,7 @@ CREATE TABLE `cluster_mqserver_relation` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `cluster_mqserver_relation` VALUES (1, 1, 'ddmq', 1, 'R_default', '{\"groupPrefix\":\"carrera_rocketmq_consumer_\",\"pullBatchSize\":32,\"pollNameServerInterval\":2000,\"consumeMessageBatchMaxSize\":1,\"persistConsumerOffsetInterval\":5000,\"pullThresholdForQueue\":1000,\"consumeFromWhere\":\"CONSUME_FROM_LAST_OFFSET\",\"heartbeatBrokerInterval\":2000,\"consumeConcurrentlyMaxSpan\":2000}', 1, 0, '2018-07-20 11:25:58', '2018-12-28 20:36:28');
-INSERT INTO `cluster_mqserver_relation` VALUES (2, 1, 'ddmq', 1, 'R_default', '{\"useKafka\":false,\"warmUpConnection\":true,\"rocketmqConfigurationMap\":{\"R_default\":{\"groupPrefix\":\"carrera_rocketmq_producer_\",\"compressMsgBodyOverHowmuch\":4096,\"pollNameServerInterval\":2000,\"namesrvAddrs\":[\"172.18.0.3:9876\",\"172.18.0.4:9876\"],\"persistConsumerOffsetInterval\":5000,\"heartbeatBrokerInterval\":10000,\"clientCallbackExecutorThreads\":4,\"retryAnotherBrokerWhenNotStoreOK\":false,\"retryTimesWhenSendFailed\":1,\"sendMsgTimeout\":3000,\"maxMessageSize\":2097152}},\"warmUpFetchTopicRouteInfo\":true,\"rateLimit\":{\"staticMode\":false},\"thriftServer\":{\"workerQueueSize\":20000,\"backlog\":50,\"timeoutCheckerThreads\":3,\"port\":9613,\"acceptQueueSizePerThread\":100,\"selectorThreads\":8,\"maxReadBufferBytes\":5000000,\"clientTimeout\":0,\"workerThreads\":0},\"rocketmqProducers\":3,\"useRocketmq\":true,\"retryDelays\":[200,500,1000,5000,10000],\"autoBatch\":{\"maxBathBytes\":4096,\"encodeWorkerThreads\":4,\"maxBatchMessagesNumber\":32,\"doBatchThresholdBytes\":1024,\"maxContinuouslyRunningMills\":50,\"batchWaitMills\":5,\"maxEncodeWorkerForEachBroker\":1},\"kafkaProducers\":3,\"delay\":{\"chronosInnerTopicPrefix\":\"R_test_chronos_inner_\",\"innerTopicNum\":1},\"paramLength\":{\"tagLenMax\":255,\"failWhenIllegal\":true,\"keyLenMax\":255},\"tpsWarningRatio\":0.8,\"useAutoBatch\":true,\"maxTps\":3000,\"useRequestLimiter\":true,\"defaultTopicInfoConf\":{\"topics\":[]}}', 0, 0, '2018-07-20 11:27:03', '2019-10-09 15:49:50');
+INSERT INTO `cluster_mqserver_relation` VALUES (2, 1, 'ddmq', 1, 'R_default', '{\"useKafka\":false,\"warmUpConnection\":true,\"rocketmqConfigurationMap\":{\"R_default\":{\"groupPrefix\":\"carrera_rocketmq_producer_\",\"compressMsgBodyOverHowmuch\":4096,\"pollNameServerInterval\":2000,\"namesrvAddrs\":[\"172.18.0.3:9876\",\"172.18.0.4:9876\"],\"persistConsumerOffsetInterval\":5000,\"heartbeatBrokerInterval\":10000,\"clientCallbackExecutorThreads\":4,\"retryAnotherBrokerWhenNotStoreOK\":false,\"retryTimesWhenSendFailed\":1,\"sendMsgTimeout\":3000,\"maxMessageSize\":2097152}},\"warmUpFetchTopicRouteInfo\":true,\"rateLimit\":{\"staticMode\":false},\"thriftServer\":{\"workerQueueSize\":20000,\"backlog\":50,\"timeoutCheckerThreads\":3,\"port\":9613,\"acceptQueueSizePerThread\":100,\"selectorThreads\":8,\"maxReadBufferBytes\":5000000,\"clientTimeout\":0,\"workerThreads\":0},\"rocketmqProducers\":3,\"useRocketmq\":true,\"retryDelays\":[200,500,1000,5000,10000],\"autoBatch\":{\"maxBathBytes\":4096,\"encodeWorkerThreads\":4,\"maxBatchMessagesNumber\":32,\"doBatchThresholdBytes\":1024,\"maxContinuouslyRunningMills\":50,\"batchWaitMills\":5,\"maxEncodeWorkerForEachBroker\":1},\"kafkaProducers\":3,\"delay\":{\"chronosInnerTopicPrefix\":\"chronos_inner_\",\"innerTopicNum\":1},\"paramLength\":{\"tagLenMax\":255,\"failWhenIllegal\":true,\"keyLenMax\":255},\"tpsWarningRatio\":0.8,\"useAutoBatch\":true,\"maxTps\":3000,\"useRequestLimiter\":true,\"defaultTopicInfoConf\":{\"topics\":[]}}', 0, 0, '2018-07-20 11:27:03', '2019-10-11 09:10:34');
 COMMIT;
 
 -- ----------------------------
@@ -94,19 +94,20 @@ CREATE TABLE `consume_group` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_groupname` (`group_name`,`is_delete`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费组表';
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费组表';
 
 -- ----------------------------
 -- Records of consume_group
 -- ----------------------------
 BEGIN;
 INSERT INTO `consume_group` VALUES (8, 'cg_chronos_inner_0_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 1000000, 2592000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', '延迟消息专用', 0, '2019-10-10 10:07:06', '2019-10-10 10:30:15');
-INSERT INTO `consume_group` VALUES (9, 'cg_local_test_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'administration', 1, '2019-10-10 10:26:17', '2019-10-10 10:27:02');
-INSERT INTO `consume_group` VALUES (10, 'cg_local_test_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'administration', 1, '2019-10-10 10:26:26', '2019-10-10 10:27:02');
 INSERT INTO `consume_group` VALUES (11, 'cg_local_test_0_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_0', 0, '2019-10-10 10:27:29', '2019-10-10 10:27:29');
 INSERT INTO `consume_group` VALUES (12, 'cg_local_test_0_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_1', 0, '2019-10-10 10:27:48', '2019-10-10 10:27:47');
 INSERT INTO `consume_group` VALUES (13, 'cg_local_test_1_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_1_0', 0, '2019-10-10 10:28:12', '2019-10-10 10:28:11');
 INSERT INTO `consume_group` VALUES (14, 'cg_local_test_1_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_1_1', 0, '2019-10-10 10:28:35', '2019-10-10 10:28:34');
+INSERT INTO `consume_group` VALUES (15, 'cg_local_test_0_2', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_2', 0, '2019-10-11 14:15:55', '2019-10-11 14:15:54');
+INSERT INTO `consume_group` VALUES (16, 'cg_local_test_0_3', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_3', 0, '2019-10-11 14:32:44', '2019-10-11 14:32:43');
+INSERT INTO `consume_group` VALUES (17, 'cg_local_test_0_4', 'Engineering', 'Software', 'administration;', 1, '', 1, 100000, 2592000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_4', 0, '2019-10-11 16:01:29', '2019-10-11 16:01:29');
 COMMIT;
 
 -- ----------------------------
@@ -162,14 +163,17 @@ CREATE TABLE `consume_subscription` (
   PRIMARY KEY (`id`),
   KEY `idx_groupid_topicid` (`is_delete`,`group_id`,`topic_id`,`state`),
   KEY `idx_clu_group_consumetype` (`is_delete`,`cluster_id`,`group_id`,`consume_type`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费订阅关系表';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费订阅关系表';
 
 -- ----------------------------
 -- Records of consume_subscription
 -- ----------------------------
 BEGIN;
-INSERT INTO `consume_subscription` VALUES (11, 11, 'cg_local_test_0_0', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 1000, 3, '[50,100,150]', 1, 1, 1, NULL, '{}', 1, '', 1, 0, '', '[]', 0, '', '{}', 0, '', 0, '[\"Async\",\"PullServer\"]', '{\"appendContext\":null,\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_0', 0, '2019-10-10 10:31:40', '2019-10-10 10:55:42');
-INSERT INTO `consume_subscription` VALUES (12, 12, 'cg_local_test_0_1', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 1000, 3, '[50000,100000,150000]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 2, 'ssdddsdsdsdddssd', 128, '[\"Async\",\"Json\",\"FormParams2\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_1', 0, '2019-10-10 10:32:48', '2019-10-10 10:55:42');
+INSERT INTO `consume_subscription` VALUES (11, 11, 'cg_local_test_0_0', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 5000, 3, '[50,100,150]', 1, 1, 1, NULL, '{}', 1, '', 1, 0, '', '[]', 0, '', '{}', 0, '', 0, '[\"Async\",\"PullServer\"]', '{\"appendContext\":null,\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_0', 0, '2019-10-10 10:31:40', '2019-10-11 12:32:05');
+INSERT INTO `consume_subscription` VALUES (12, 12, 'cg_local_test_0_1', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 5000, 3, '[50000,100000,150000]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 2, 'ssdddsdsdsdddssd', 128, '[\"Async\",\"Json\",\"FormParams2\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_1', 0, '2019-10-10 10:32:48', '2019-10-11 13:14:53');
+INSERT INTO `consume_subscription` VALUES (13, 15, 'cg_local_test_0_2', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 5000, 3, '[50,100,150]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 2, 'aaaaaaaaaaaaaaaa', 128, '[\"Async\",\"Json\",\"FormParams2\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_2', 0, '2019-10-11 14:17:25', '2019-10-11 14:18:57');
+INSERT INTO `consume_subscription` VALUES (15, 16, 'cg_local_test_0_3', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 10000, 3, '[50000,100000,150000]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 2, 'vvvvvvvvvvvvvvvvvvvvvv', 128, '[\"Async\",\"Json\",\"FormParams2\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_3', 0, '2019-10-11 16:00:12', '2019-10-11 16:03:37');
+INSERT INTO `consume_subscription` VALUES (16, 17, 'cg_local_test_0_4', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 100000, 2592000, 1, 10000, 3, '[50000,100000,150000]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 1, 'ccccccccccccccccccc', 128, '[\"Async\",\"Json\",\"FormParams\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.5:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_4', 0, '2019-10-11 16:02:21', '2019-10-11 16:03:37');
 COMMIT;
 
 -- ----------------------------
@@ -245,6 +249,8 @@ INSERT INTO `node` VALUES (1, 1, 1, 0, '172.18.0.3', 3, 0, '2018-12-28 11:29:01'
 INSERT INTO `node` VALUES (2, 1, 1, 0, '172.18.0.3', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
 INSERT INTO `node` VALUES (3, 1, 1, 0, '172.18.0.4', 3, 0, '2018-12-28 11:29:01', '2018-12-28 20:39:21');
 INSERT INTO `node` VALUES (4, 1, 1, 0, '172.18.0.4', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
+INSERT INTO `node` VALUES (5, 1, 1, 0, '172.18.0.5', 3, 0, '2019-10-11 16:06:04', '2019-10-11 16:06:21');
+INSERT INTO `node` VALUES (6, 1, 1, 0, '172.18.0.5', 4, 0, '2019-10-11 16:06:04', '2019-10-11 16:06:18');
 COMMIT;
 
 -- ----------------------------

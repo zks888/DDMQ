@@ -94,20 +94,7 @@ CREATE TABLE `consume_group` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_groupname` (`group_name`,`is_delete`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费组表';
-
--- ----------------------------
--- Records of consume_group
--- ----------------------------
-BEGIN;
-INSERT INTO `consume_group` VALUES (8, 'cg_chronos_inner_0_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 1000000, 2592000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', '延迟消息专用', 0, '2019-10-10 10:07:06', '2019-10-10 10:30:15');
-INSERT INTO `consume_group` VALUES (9, 'cg_local_test_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'administration', 1, '2019-10-10 10:26:17', '2019-10-10 10:27:02');
-INSERT INTO `consume_group` VALUES (10, 'cg_local_test_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'administration', 1, '2019-10-10 10:26:26', '2019-10-10 10:27:02');
-INSERT INTO `consume_group` VALUES (11, 'cg_local_test_0_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_0', 0, '2019-10-10 10:27:29', '2019-10-10 10:27:29');
-INSERT INTO `consume_group` VALUES (12, 'cg_local_test_0_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_0_1', 0, '2019-10-10 10:27:48', '2019-10-10 10:27:47');
-INSERT INTO `consume_group` VALUES (13, 'cg_local_test_1_0', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_1_0', 0, '2019-10-10 10:28:12', '2019-10-10 10:28:11');
-INSERT INTO `consume_group` VALUES (14, 'cg_local_test_1_1', 'Engineering', 'Software', 'administration;', 1, '', 1, 10000, 300000, 1, 1, '', '{}', '{\"asyncThreads\":8,\"redisConfig\":null}', 'cg_local_test_1_1', 0, '2019-10-10 10:28:35', '2019-10-10 10:28:34');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费组表';
 
 -- ----------------------------
 -- Table structure for consume_subscription
@@ -162,15 +149,7 @@ CREATE TABLE `consume_subscription` (
   PRIMARY KEY (`id`),
   KEY `idx_groupid_topicid` (`is_delete`,`group_id`,`topic_id`,`state`),
   KEY `idx_clu_group_consumetype` (`is_delete`,`cluster_id`,`group_id`,`consume_type`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费订阅关系表';
-
--- ----------------------------
--- Records of consume_subscription
--- ----------------------------
-BEGIN;
-INSERT INTO `consume_subscription` VALUES (11, 11, 'cg_local_test_0_0', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 1000, 3, '[50,100,150]', 1, 1, 1, NULL, '{}', 1, '', 1, 0, '', '[]', 0, '', '{}', 0, '', 0, '[\"Async\",\"PullServer\"]', '{\"appendContext\":null,\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_0', 0, '2019-10-10 10:31:40', '2019-10-10 10:55:42');
-INSERT INTO `consume_subscription` VALUES (12, 12, 'cg_local_test_0_1', 12, 'local_test_0', 1, 'ddmq', 0, '', 0, 128.00, 0, 1, 2, 10000, 300000, 1, 1000, 3, '[50000,100000,150000]', 1, 1, 1, NULL, '{}', 1, '', 2, 0, '', '[\"http://192.168.11.247/test.php\"]', 0, '', '{}', 2, 'ssdddsdsdsdddssd', 128, '[\"Async\",\"Json\",\"FormParams2\",\"AsyncHttp\"]', '{\"appendContext\":[\"TOPIC\",\"GROUP\",\"OFFSET\",\"QID\",\"SOURCE\",\"MSG_KEY\",\"TOKEN\",\"PROPERTIES\"],\"binlog\":false,\"concurrency\":1024,\"fetchThreads\":1,\"httpMaxTps\":-1.0,\"maxConsumeLag\":-1,\"maxPullBatchSize\":8,\"needResetOffset\":false,\"oldDbData\":false,\"proxies\":{\"C_ddmq\":[\"172.18.0.4:9713\",\"172.18.0.5:9713\",\"172.18.0.3:9713\"]}}', 0, '{}', 'sub_cg_local_test_0_1', 0, '2019-10-10 10:32:48', '2019-10-10 10:55:42');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='消费订阅关系表';
 
 -- ----------------------------
 -- Table structure for idc
@@ -245,6 +224,8 @@ INSERT INTO `node` VALUES (1, 1, 1, 0, '172.18.0.3', 3, 0, '2018-12-28 11:29:01'
 INSERT INTO `node` VALUES (2, 1, 1, 0, '172.18.0.3', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
 INSERT INTO `node` VALUES (3, 1, 1, 0, '172.18.0.4', 3, 0, '2018-12-28 11:29:01', '2018-12-28 20:39:21');
 INSERT INTO `node` VALUES (4, 1, 1, 0, '172.18.0.4', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
+INSERT INTO `node` VALUES (5, 1, 1, 0, '172.18.0.5', 3, 0, '2018-12-28 11:29:01', '2018-12-28 20:39:21');
+INSERT INTO `node` VALUES (6, 1, 1, 0, '172.18.0.5', 4, 0, '2018-12-28 11:29:05', '2018-12-28 20:39:21');
 COMMIT;
 
 -- ----------------------------
@@ -274,17 +255,7 @@ CREATE TABLE `topic` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_topicname` (`topic_name`,`is_delete`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic信息表';
-
--- ----------------------------
--- Records of topic
--- ----------------------------
-BEGIN;
-INSERT INTO `topic` VALUES (5, 'inspection', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'inspection', '{}', 0, '2019-10-09 11:04:24', '2019-10-09 11:04:23');
-INSERT INTO `topic` VALUES (9, 'chronos_inner_0', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'chronos_inner_0', '{}', 0, '2019-10-10 10:06:37', '2019-10-10 10:06:37');
-INSERT INTO `topic` VALUES (12, 'local_test_0', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'local_test_0', '{}', 0, '2019-10-10 10:25:55', '2019-10-10 10:25:55');
-INSERT INTO `topic` VALUES (13, 'local_test_1', NULL, 'Engineering', 'Software', 'administration;', '', 0, 1, 1, 1, 0, '', 0, '{\"autoBatch\":false,\"compressionType\":0,\"useCache\":true}', 'local_test_1', '{}', 0, '2019-10-10 10:26:06', '2019-10-10 10:26:05');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic信息表';
 
 -- ----------------------------
 -- Table structure for topic_conf
@@ -312,16 +283,6 @@ CREATE TABLE `topic_conf` (
   PRIMARY KEY (`id`),
   KEY `idx_topicid_clusterid_mqserverid` (`is_delete`,`topic_id`,`cluster_id`,`mq_server_id`),
   KEY `idx_topicname` (`is_delete`,`topic_name`,`cluster_name`,`mq_server_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic集群配置表';
-
--- ----------------------------
--- Records of topic_conf
--- ----------------------------
-BEGIN;
-INSERT INTO `topic_conf` VALUES (5, 5, 'inspection', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-09 11:04:24', '2019-10-09 11:04:23');
-INSERT INTO `topic_conf` VALUES (9, 9, 'chronos_inner_0', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-10 10:06:37', '2019-10-10 10:06:38');
-INSERT INTO `topic_conf` VALUES (12, 12, 'local_test_0', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-10 10:25:55', '2019-10-10 10:25:55');
-INSERT INTO `topic_conf` VALUES (13, 13, 'local_test_1', 1, 'ddmq', 1, 'R_default', 1, 'default', '', 1024, 1024, 1024, 0, '{\"proxies\":{\"P_ddmq\":[\"172.18.0.4:9613\",\"172.18.0.5:9613\",\"172.18.0.3:9613\"]}}', 0, '2019-10-10 10:26:06', '2019-10-10 10:26:05');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='topic集群配置表';
 
 SET FOREIGN_KEY_CHECKS = 1;

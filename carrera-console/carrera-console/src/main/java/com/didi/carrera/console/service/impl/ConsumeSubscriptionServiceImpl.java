@@ -214,6 +214,9 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
             }
         }
         hostSet.removeAll(usedHostSet);
+        if (CollectionUtils.isEmpty(hostSet)) {
+            return null;
+        }
         return RandomUtils.getRandomElement(hostSet);
     }
 

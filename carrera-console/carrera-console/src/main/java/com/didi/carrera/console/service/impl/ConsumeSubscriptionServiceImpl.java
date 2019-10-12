@@ -190,6 +190,9 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
                 config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).addAll(hostSet);
             } else {
                 String host = getNotUsedHost(hostSet, sub.getTopicId(), sub.getClusterId(), consumeType);
+                if (host == null) {
+                    throw new RuntimeException("host not found, topicId=" + sub.getTopicId());
+                }
                 config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).add(host);
             }
         }

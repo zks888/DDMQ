@@ -2,6 +2,7 @@ package com.xiaojukeji.carrera.cproxy.actions.http;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.xiaojukeji.carrera.chronos.enums.MsgTypes;
 import com.xiaojukeji.carrera.chronos.model.InternalKey;
 import com.xiaojukeji.carrera.config.v4.cproxy.UpstreamTopic;
@@ -9,6 +10,7 @@ import com.xiaojukeji.carrera.cproxy.actions.FormParamsExtractAction;
 import com.xiaojukeji.carrera.cproxy.consumer.UpstreamJob;
 import com.xiaojukeji.carrera.cproxy.consumer.limiter.LimiterMgr;
 import com.xiaojukeji.carrera.cproxy.utils.*;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpStatus;
 import org.asynchttpclient.AsyncCompletionHandler;
@@ -27,8 +29,11 @@ import static com.xiaojukeji.carrera.cproxy.actions.FormParamsExtractAction.CARR
 import static com.xiaojukeji.carrera.thrift.consumer.consumerProxyConstants.CARRERA_HEADERS;
 import static org.slf4j.LoggerFactory.getLogger;
 
-
 public class CarreraAsyncRequest extends AsyncCompletionHandler<Response> {
+
+    private static final String HTTP_CALLBACK_URL_KEY = "carrera_http_callback_url";
+    private static final String HTTP_CALLBACK_URL_KEY_SPLITER = "<>"; //分割多个url
+
     enum HttpErrNo {
         OK(0),
         SLOW(1000000),
@@ -120,7 +125,7 @@ public class CarreraAsyncRequest extends AsyncCompletionHandler<Response> {
             long elapse = TimeUtils.getElapseTime(startTime);
             MetricUtils.httpRequestSuccessMetric(job, result == ProcessResult.OK, lastRequestErrno);
             if (result == ProcessResult.OK) {
-                LOGGER.info("Action Result: HttpAccess[result:success,request:{},used:{}ms]", this, elapse);
+                LOGGER.info("Action Result: HttpAccess[result:success,request:{},used:{}ms,url:{}]", this, elapse, getUrl());
                 job.onFinished(true);
             } else if (result == ProcessResult.FAIL) {
                 LOGGER.info("Action Result: HttpAccess[result:failure,request:{},used:{}ms,response:{}]",
@@ -332,7 +337,14 @@ public class CarreraAsyncRequest extends AsyncCompletionHandler<Response> {
     }
 
     public String getUrl() {
-        List<String> urls = job.getUrls();
+        List<String> urls;
+        if (MapUtils.isNotEmpty(job.getContext().getProperties()) && job.getContext().getProperties().get(HTTP_CALLBACK_URL_KEY) != null) {
+            String customUrl = job.getContext().getProperties().get(HTTP_CALLBACK_URL_KEY);
+            urls = Lists.newArrayList(customUrl.split(HTTP_CALLBACK_URL_KEY_SPLITER));
+        } else {
+            urls = job.getUrls();
+        }
+
         return urls.get((startIdx + job.getErrorRetryCnt()) % urls.size());
     }
 

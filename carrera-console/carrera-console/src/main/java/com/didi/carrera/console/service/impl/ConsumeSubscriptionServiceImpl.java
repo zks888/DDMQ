@@ -185,13 +185,33 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
 
         if (CollectionUtils.isNotEmpty(nodeList)) {
             Set<String> hostSet = nodeList.stream().map(n -> HostUtils.getIpPortFromHost(n.getHost(), ZKV4ConfigServiceImpl.DEFAULT_CPROXY_PORT)).collect(Collectors.toSet());
-            if (sub.getConsumeType() == ConsumeSubscriptionConsumeType.HTTP.getIndex()) {
-                String e = RandomUtils.getRandomElement(hostSet);
-                config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).add(e);
-            } else {
+            Byte consumeType = sub.getConsumeType();
+            if (consumeType == ConsumeSubscriptionConsumeType.SDK.getIndex()) {
                 config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).addAll(hostSet);
+            } else {
+                String host = getNotUsedHost(hostSet, sub.getTopicId(), sub.getClusterId(), consumeType);
+                config.getProxies().computeIfAbsent("C_" + clusterName, s -> Sets.newHashSet()).add(host);
             }
         }
+    }
+
+    private String getNotUsedHost(Set<String> hostSet, Long topicId, Long clusterId, Byte consumeType) {
+        List<ConsumeSubscription> subList = findByTopicIdClusterIdConsumeType(topicId, clusterId, consumeType);
+        if (CollectionUtils.isEmpty(subList)) {
+            return null;
+        }
+        Set<String> usedHostSet = Sets.newHashSet();
+        for (ConsumeSubscription sub : subList) {
+            if (sub.getConsumeSubscriptionConfig() != null && MapUtils.isNotEmpty(sub.getConsumeSubscriptionConfig().getProxies())) {
+                Map<String, Set<String>> proxyMap = sub.getConsumeSubscriptionConfig().getProxies();
+                for (Map.Entry<String, Set<String>> entry : proxyMap.entrySet()) {
+                    Set<String> hostList = entry.getValue();
+                    usedHostSet.addAll(hostList);
+                }
+            }
+        }
+        hostSet.removeAll(usedHostSet);
+        return RandomUtils.getRandomElement(hostSet);
     }
 
     @Override
@@ -452,6 +472,12 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
         ConsumeSubscriptionCriteria csc = new ConsumeSubscriptionCriteria();
         csc.createCriteria().andIsDeleteEqualTo(IsDelete.NO.getIndex()).andClusterIdEqualTo(clusterId);
         return consumeSubscriptionMapper.selectByExampleWithBLOBs(csc);
+    }
+
+    public List<ConsumeSubscription> findByTopicIdClusterIdConsumeType(Long topicId, Long clusterId, Byte consumeType) {
+        ConsumeSubscriptionCriteria csc = new ConsumeSubscriptionCriteria();
+        csc.createCriteria().andIsDeleteEqualTo(IsDelete.NO.getIndex()).andClusterIdEqualTo(clusterId).andTopicIdEqualTo(topicId).andConsumeTypeEqualTo(consumeType);
+        return consumeSubscriptionMapper.selectByExample(csc);
     }
 
     @Override

@@ -301,17 +301,19 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
         String ipPort = HostUtils.getIpPortFromHost(host, ZKV4ConfigServiceImpl.DEFAULT_CPROXY_PORT);
         Set<Long> clusterIds = Sets.newHashSet();
         for (ConsumeSubscription sub : subList) {
-            if (sub.getConsumeSubscriptionConfig() != null && MapUtils.isNotEmpty(sub.getConsumeSubscriptionConfig().getProxies())) {
-                Map<String, Set<String>> proxyMap = sub.getConsumeSubscriptionConfig().getProxies();
-                for (Map.Entry<String, Set<String>> entry : proxyMap.entrySet()) {
-                    Set<String> ipLists = entry.getValue();
-                    if (!ipLists.contains(ipPort)) {
-                        ipLists.add(ipPort);
-                        clusterIds.add(sub.getClusterId());
-                        updateByPrimaryKey(sub);
+            if (sub.getConsumeType() == ConsumeSubscriptionConsumeType.SDK.getIndex()) {
+                if (sub.getConsumeSubscriptionConfig() != null && MapUtils.isNotEmpty(sub.getConsumeSubscriptionConfig().getProxies())) {
+                    Map<String, Set<String>> proxyMap = sub.getConsumeSubscriptionConfig().getProxies();
+                    for (Map.Entry<String, Set<String>> entry : proxyMap.entrySet()) {
+                        Set<String> ipLists = entry.getValue();
+                        if (!ipLists.contains(ipPort)) {
+                            ipLists.add(ipPort);
+                            clusterIds.add(sub.getClusterId());
+                            updateByPrimaryKey(sub);
 
-                        pushV4ZkInfo(sub.getGroupId(), null);
-                        LOGGER.info("add cproxy {} success, subId={}, group={}, topic={}, cluster={}", ipPort, sub.getId(), sub.getGroupName(), sub.getTopicName(), sub.getClusterName());
+                            pushV4ZkInfo(sub.getGroupId(), null);
+                            LOGGER.info("add cproxy {} success, subId={}, group={}, topic={}, cluster={}", ipPort, sub.getId(), sub.getGroupName(), sub.getTopicName(), sub.getClusterName());
+                        }
                     }
                 }
             }
@@ -350,16 +352,18 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
         String ipPort = HostUtils.getIpPortFromHost(host, ZKV4ConfigServiceImpl.DEFAULT_CPROXY_PORT);
         Set<Long> clusterIds = Sets.newHashSet();
         for (ConsumeSubscription sub : subList) {
-            if (sub.getConsumeSubscriptionConfig() != null && MapUtils.isNotEmpty(sub.getConsumeSubscriptionConfig().getProxies())) {
-                Map<String, Set<String>> proxyMap = sub.getConsumeSubscriptionConfig().getProxies();
-                for (Set<String> ipLists : proxyMap.values()) {
-                    if (ipLists.contains(ipPort)) {
-                        ipLists.remove(ipPort);
-                        clusterIds.add(sub.getClusterId());
-                        updateByPrimaryKey(sub);
+            if (sub.getConsumeType() == ConsumeSubscriptionConsumeType.SDK.getIndex()) {
+                if (sub.getConsumeSubscriptionConfig() != null && MapUtils.isNotEmpty(sub.getConsumeSubscriptionConfig().getProxies())) {
+                    Map<String, Set<String>> proxyMap = sub.getConsumeSubscriptionConfig().getProxies();
+                    for (Set<String> ipLists : proxyMap.values()) {
+                        if (ipLists.contains(ipPort)) {
+                            ipLists.remove(ipPort);
+                            clusterIds.add(sub.getClusterId());
+                            updateByPrimaryKey(sub);
 
-                        pushV4ZkInfo(sub.getGroupId(), null);
-                        LOGGER.info("remove cproxy {} success, subId={}, group={}, topic={}, cluster={}", ipPort, sub.getId(), sub.getGroupName(), sub.getTopicName(), sub.getClusterName());
+                            pushV4ZkInfo(sub.getGroupId(), null);
+                            LOGGER.info("remove cproxy {} success, subId={}, group={}, topic={}, cluster={}", ipPort, sub.getId(), sub.getGroupName(), sub.getTopicName(), sub.getClusterName());
+                        }
                     }
                 }
             }

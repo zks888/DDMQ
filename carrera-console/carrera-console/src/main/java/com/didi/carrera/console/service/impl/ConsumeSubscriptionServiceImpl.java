@@ -201,7 +201,7 @@ public class ConsumeSubscriptionServiceImpl implements ConsumeSubscriptionServic
     private String getNotUsedHost(Set<String> hostSet, Long topicId, Long clusterId, Byte consumeType) {
         List<ConsumeSubscription> subList = findByTopicIdClusterIdConsumeType(topicId, clusterId, consumeType);
         if (CollectionUtils.isEmpty(subList)) {
-            return null;
+            return RandomUtils.getRandomElement(hostSet);
         }
         Set<String> usedHostSet = Sets.newHashSet();
         for (ConsumeSubscription sub : subList) {

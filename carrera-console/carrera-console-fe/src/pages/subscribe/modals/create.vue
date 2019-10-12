@@ -251,12 +251,12 @@
             </bc-form-item>
 
             <bc-form-item label="Consume type" prop="consumeType">
-                <bc-select v-if="isEditing" disabled placehold="Please select" :width="265" v-model.number="form.consumeType">
-                  <bc-option v-for="item in dict.topic.consumeTypes"
+              <bc-select placehold="Please select" :width="265" v-model.number="form.consumeType" :disabled="isEditing">
+                <bc-option v-for="item in dict.topic.consumeTypes"
                     :value=item.value
                     :label=item.label
                     :key="item.label"></bc-option>
-                </bc-select>
+              </bc-select>
 
             </bc-form-item>
           </div>
